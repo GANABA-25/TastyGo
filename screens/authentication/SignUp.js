@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     gap: 24,
-    paddingTop: 70,
+    paddingTop: 50,
     paddingHorizontal: 15,
   },
   login: {

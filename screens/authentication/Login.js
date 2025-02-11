@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet } from "react-native";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -9,8 +9,10 @@ import Input from "../../components/Input";
 import Colors from "../../constants/Colors";
 
 import Button from "../../components/Button";
+import { AuthContext } from "../../store/auth-context";
 
 const Login = () => {
+  const authCtx = useContext(AuthContext);
   const [viewPassword, setViewPassword] = useState(false);
   const [LoginData, setLoginData] = useState({
     email: "",
@@ -29,6 +31,8 @@ const Login = () => {
 
   const SubmitHandler = () => {
     console.log(LoginData);
+    const token = "12345678910";
+    authCtx.authenticate(token);
   };
 
   return (

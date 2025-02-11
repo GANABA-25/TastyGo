@@ -1,8 +1,16 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { ImageBackground, StyleSheet, Text, View } from "react-native";
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -28,6 +36,199 @@ import Favourite from "./screens/Favourite";
 import Cart from "./screens/Cart";
 import Profile from "./screens/Profile";
 
+import PickBestFood from "./screens/selection/PickBestFood";
+import FastDelivery from "./screens/selection/FastDelivery";
+import LiveTracking from "./screens/selection/LiveTracking";
+import GetStarted from "./screens/selection/GetStarted";
+
+import AuthContextProvider from "./store/auth-context";
+import { AuthContext } from "./store/auth-context";
+
+function CustomSignUpHeader({ title }) {
+  return (
+    <ImageBackground
+      source={require("./assets/images/Authentication/signupBackgroundImage.jpg")}
+      style={styles.headerBackground}
+      resizeMode="cover"
+    >
+      <View style={styles.imageOverlay} />
+      <Text style={styles.SignupHeaderTitle}>{title}</Text>
+    </ImageBackground>
+  );
+}
+
+function CustomHeader({ title }) {
+  const navigation = useNavigation();
+  return (
+    <ImageBackground
+      source={require("./assets/images/Login/backgroundImage.jpg")}
+      style={styles.headerBackground}
+      resizeMode="cover"
+    >
+      <View style={styles.imageOverlay} />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <Ionicons name="arrow-back" size={24} color="white" />
+      </TouchableOpacity>
+
+      <Text style={styles.headerTitle}>{title}</Text>
+    </ImageBackground>
+  );
+}
+
+const AuthStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{
+          header: (props) => <CustomSignUpHeader title="Sign up" {...props} />,
+        }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          header: (props) => <CustomHeader title="Log in" {...props} />,
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const GetStartedStack = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="PickBestFood" component={PickBestFood} />
+      <Stack.Screen name="FastDelivery" component={FastDelivery} />
+      <Stack.Screen name="LiveTracking" component={LiveTracking} />
+      <Stack.Screen name="GetStarted" component={GetStarted} />
+    </Stack.Navigator>
+  );
+};
+
+const AuthenticatedStack = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: Colors.primary200,
+        tabBarInactiveTintColor: Colors.primary100,
+        tabBarStyle: styles.tabBar,
+        tabBarIconStyle: styles.tabBarIcon,
+        tabBarShowLabel: false,
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Octicons name="home" size={25} color={color} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Favourite"
+        component={Favourite}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="heart-outline" size={25} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={Cart}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="cart-outline" size={25} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="person-outline" size={25} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+const Navigation = () => {
+  const authCtx = useContext(AuthContext);
+
+  return (
+    <NavigationContainer>
+      {!authCtx.isAuthenticated ? (
+        <AuthStack />
+      ) : !authCtx.isOnboardingComplete ? (
+        <GetStartedStack />
+      ) : (
+        <AuthenticatedStack />
+      )}
+    </NavigationContainer>
+  );
+};
+
+const Root = () => {
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+
+        const storedToken = await AsyncStorage.getItem("token");
+        const onboardingToken = await AsyncStorage.getItem(
+          "onboardingComplete"
+        );
+
+        if (storedToken) {
+          authCtx.authenticate(storedToken);
+        }
+
+        if (onboardingToken) {
+          authCtx.OnboardingComplete(onboardingToken);
+        }
+
+        setIsTryingLogin(false);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        setIsTryingLogin(false);
+        await SplashScreen.hideAsync();
+      }
+    };
+
+    initializeApp();
+  }, []);
+
+  if (isTryingLogin) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  return <Navigation />;
+};
+
 export default function App() {
   const [loaded, error] = useFonts({
     "OpenSans-Regular": require("./assets/fonts/OpenSans-Regular.ttf"),
@@ -36,127 +237,21 @@ export default function App() {
   });
 
   useEffect(() => {
-    if (loaded || error) {
-      SplashScreen.hideAsync();
+    async function hideSplashScreen() {
+      if (loaded || error) {
+        await SplashScreen.hideAsync();
+      }
     }
+    hideSplashScreen();
   }, [loaded, error]);
 
-  if (!loaded && !error) {
-    return null;
-  }
-
-  const TapNavigation = () => {
-    return (
-      <Tab.Navigator
-        screenOptions={{
-          tabBarActiveTintColor: Colors.primary200,
-          tabBarInactiveTintColor: Colors.primary100,
-          tabBarStyle: styles.tabBar,
-          tabBarIconStyle: styles.tabBarIcon,
-          tabBarShowLabel: false,
-        }}
-      >
-        <Tab.Screen
-          name="Home"
-          component={Home}
-          options={{
-            headerShown: false,
-            tabBarIcon: ({ color }) => (
-              <Octicons name="home" size={25} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Cart"
-          component={Cart}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Ionicons name="heart-outline" size={25} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Favourite"
-          component={Favourite}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Ionicons name="cart-outline" size={25} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            tabBarIcon: ({ color }) => (
-              <Ionicons name="person-outline" size={25} color={color} />
-            ),
-          }}
-        />
-      </Tab.Navigator>
-    );
-  };
-
-  function CustomSignUpHeader({ title }) {
-    const navigation = useNavigation();
-    return (
-      <ImageBackground
-        source={require("./assets/images/Authentication/signupBackgroundImage.jpg")}
-        style={styles.headerBackground}
-        resizeMode="cover"
-      >
-        <View style={styles.imageOverlay} />
-        <Text style={styles.SignupHeaderTitle}>{title}</Text>
-      </ImageBackground>
-    );
-  }
-
-  function CustomHeader({ title }) {
-    const navigation = useNavigation();
-    return (
-      <ImageBackground
-        source={require("./assets/images/Login/backgroundImage.jpg")}
-        style={styles.headerBackground}
-        resizeMode="cover"
-      >
-        <View style={styles.imageOverlay} />
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-
-        <Text style={styles.headerTitle}>{title}</Text>
-      </ImageBackground>
-    );
-  }
-
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="light" />
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{
-              header: (props) => (
-                <CustomSignUpHeader title="Sign up" {...props} />
-              ),
-            }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              header: (props) => <CustomHeader title="Log in" {...props} />,
-            }}
-          />
-          <Stack.Screen name="TapNavigation" component={TapNavigation} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+    <AuthContextProvider>
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="light" />
+        <Root />
+      </SafeAreaView>
+    </AuthContextProvider>
   );
 }
 
@@ -174,7 +269,7 @@ const styles = StyleSheet.create({
   },
   SignupHeaderTitle: {
     color: "white",
-    fontSize: 45,
+    fontSize: 35,
     fontFamily: "OpenSans-Bold",
     top: 50,
   },
