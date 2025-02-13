@@ -30,9 +30,6 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
-  console.log("authToken Removed", authToken);
-  console.log("OnboardingToken removed", OnboardingToken);
-
   const OnboardingComplete = (OnboardingToken) => {
     setOnboardingToken(OnboardingToken);
     AsyncStorage.setItem("onboardingComplete", OnboardingToken);

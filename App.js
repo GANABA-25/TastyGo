@@ -36,10 +36,13 @@ import Favourite from "./screens/Favourite";
 import Cart from "./screens/Cart";
 import Profile from "./screens/Profile";
 
-import PickBestFood from "./screens/selection/PickBestFood";
-import FastDelivery from "./screens/selection/FastDelivery";
-import LiveTracking from "./screens/selection/LiveTracking";
-import GetStarted from "./screens/selection/GetStarted";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+
+import PickBestFood from "./screens/onBoarding/PickBestFood";
+import FastDelivery from "./screens/onBoarding/FastDelivery";
+import LiveTracking from "./screens/onBoarding/LiveTracking";
+import GetStarted from "./screens/onBoarding/GetStarted";
+import FoodCategory from "./screens/onBoarding/FoodCategory";
 
 import AuthContextProvider from "./store/auth-context";
 import { AuthContext } from "./store/auth-context";
@@ -110,6 +113,7 @@ const GetStartedStack = () => {
       <Stack.Screen name="FastDelivery" component={FastDelivery} />
       <Stack.Screen name="LiveTracking" component={LiveTracking} />
       <Stack.Screen name="GetStarted" component={GetStarted} />
+      <Stack.Screen name="FoodCategory" component={FoodCategory} />
     </Stack.Navigator>
   );
 };
@@ -220,8 +224,16 @@ const Root = () => {
 
   if (isTryingLogin) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "red",
+        }}
+      >
+        {/* <ActivityIndicator size="large" color={Colors.primary200} /> */}
+        <FontAwesome5 name="pizza-slice" size={24} color={Colors.primary200} />
       </View>
     );
   }

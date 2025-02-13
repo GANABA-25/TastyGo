@@ -1,16 +1,7 @@
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
-import { useContext, useState } from "react";
 import Colors from "../../constants/Colors";
-import { AuthContext } from "../../store/auth-context";
 
-const GetStarted = () => {
-  const authCtx = useContext(AuthContext);
-
-  const onboardingHandler = () => {
-    const OnboardingToken = "12345678910";
-    authCtx.OnboardingComplete(OnboardingToken);
-  };
-
+const GetStarted = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image
@@ -23,7 +14,10 @@ const GetStarted = () => {
         <Text style={styles.description}>
           Let get you something tasty to eat.
         </Text>
-        <Pressable onPress={onboardingHandler} style={styles.nextPage}>
+        <Pressable
+          onPress={() => navigation.navigate("FoodCategory")}
+          style={styles.nextPage}
+        >
           <Text style={styles.getStarted}>GET STARTED</Text>
         </Pressable>
       </View>
