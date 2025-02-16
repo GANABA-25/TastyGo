@@ -1,4 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import Colors from "../constants/Colors";
 
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -6,16 +7,17 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const Header = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <View>
+        <Pressable onPress={() => navigation.openDrawer()}>
           <FontAwesome6
             name="bars-staggered"
             size={20}
             color={Colors.primary100}
           />
-        </View>
+        </Pressable>
         <View style={styles.headerLeft}>
           <Ionicons name="search" size={20} color={Colors.primary100} />
           <FontAwesome name="bell-o" size={20} color={Colors.primary100} />

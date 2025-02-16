@@ -9,7 +9,7 @@ import Input from "../../components/Input";
 import Colors from "../../constants/Colors";
 
 import Button from "../../components/Button";
-import { AuthContext } from "../../store/auth-context";
+import { AuthContext } from "../../store/AuthContext";
 
 const Login = () => {
   const authCtx = useContext(AuthContext);

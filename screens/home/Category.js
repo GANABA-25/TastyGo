@@ -13,6 +13,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 const categoryData = [
   {
@@ -46,106 +47,223 @@ const foodData = [
   {
     id: "1",
     image: require("../../assets/images/Fried-Rice/rice1.jpg"),
-    time: "30 minus",
     Category: "Fried-Rice",
+    name: "Fried Rice",
+    price: 100,
+    time: "50 minutes",
+    description:
+      "Fried rice is a stir-fried dish made with cooked rice, vegetables, eggs, and meat, seasoned with soy sauce and spices. It’s flavorful, versatile, and popular worldwide.",
+    item1: "Sausage",
+    item2: "Turkey",
+    item3: "Chicken wings",
   },
   {
     id: "2",
     image: require("../../assets/images/Fried-Rice/rice2.jpg"),
-    time: "40 minus",
     Category: "Fried-Rice",
+    name: "Fried Rice",
+    price: 300,
+    time: "35 minutes",
+    description:
+      "A delicious and savory rice dish stir-fried with a mix of fresh vegetables, eggs, and tender meat, infused with aromatic spices.",
+    item1: "Beef",
+    item2: "Shrimp",
+    item3: "Grilled Chicken",
   },
   {
     id: "3",
     image: require("../../assets/images/Fried-Rice/rice3.jpg"),
-    time: "40 minus",
     Category: "Fried-Rice",
+    name: "Fried Rice",
+    price: 180,
+    time: "25 minutes",
+    description:
+      "This flavorful fried rice is a perfect balance of protein and veggies, making it a hearty and satisfying meal.",
+    item1: "Lamb",
+    item2: "Fish",
+    item3: "Tofu",
   },
   {
     id: "4",
     image: require("../../assets/images/Fried-Rice/rice4.jpg"),
-    time: "40 minus",
     Category: "Fried-Rice",
+    name: "Fried Rice",
+    price: 200,
+    time: "40 minutes",
+    description:
+      "A classic favorite, stir-fried rice combined with fresh veggies, proteins, and a special blend of seasonings.",
+    item1: "Grilled Pork",
+    item2: "Duck",
+    item3: "Mushrooms",
   },
   {
     id: "5",
     image: require("../../assets/images/Pizza/pizza1.jpg"),
-    time: "30 minus",
     Category: "Pizza",
+    name: "Pepperoni Pizza",
+    price: 200,
+    time: "30 minutes",
+    description:
+      "A classic pizza topped with spicy pepperoni, gooey cheese, and a rich tomato sauce.",
+    item1: "Extra Cheese",
+    item2: "Olives",
+    item3: "Jalapeños",
   },
   {
     id: "6",
     image: require("../../assets/images/Pizza/pizza2.jpg"),
-    time: "40 minus",
     Category: "Pizza",
+    name: "Margherita Pizza",
+    price: 180,
+    time: "40 minutes",
+    description:
+      "A simple yet delicious pizza topped with fresh mozzarella, basil, and rich tomato sauce.",
+    item1: "Extra Cheese",
+    item2: "Tomatoes",
+    item3: "Basil",
   },
   {
     id: "7",
     image: require("../../assets/images/Pizza/pizza3.jpg"),
-    time: "40 minus",
     Category: "Pizza",
+    name: "BBQ Chicken Pizza",
+    price: 220,
+    time: "40 minutes",
+    description:
+      "A smoky, tangy delight with BBQ sauce, grilled chicken, and caramelized onions.",
+    item1: "Bacon",
+    item2: "Cheddar Cheese",
+    item3: "Onions",
   },
   {
     id: "8",
     image: require("../../assets/images/Pizza/pizza4.jpg"),
-    time: "40 minus",
     Category: "Pizza",
+    name: "Veggie Supreme",
+    price: 190,
+    time: "40 minutes",
+    description:
+      "A wholesome pizza loaded with fresh bell peppers, mushrooms, olives, and tomatoes.",
+    item1: "Spinach",
+    item2: "Feta Cheese",
+    item3: "Bell Peppers",
   },
   {
     id: "9",
     image: require("../../assets/images/Tacos/tacos1.jpg"),
-    time: "30 minus",
     Category: "Tacos",
+    name: "Chicken Tacos",
+    price: 150,
+    time: "30 minutes",
+    description:
+      "Soft corn tortillas filled with juicy grilled chicken, fresh salsa, and a drizzle of sour cream.",
+    item1: "Guacamole",
+    item2: "Sour Cream",
+    item3: "Cilantro",
   },
   {
     id: "10",
     image: require("../../assets/images/Tacos/tacos2.jpg"),
-    time: "40 minus",
     Category: "Tacos",
+    name: "Beef Tacos",
+    price: 160,
+    time: "40 minutes",
+    description:
+      "Seasoned ground beef, topped with lettuce, cheese, and salsa, wrapped in a crispy taco shell.",
+    item1: "Cheese",
+    item2: "Lettuce",
+    item3: "Salsa",
   },
   {
     id: "11",
     image: require("../../assets/images/Tacos/tacos3.jpg"),
-    time: "40 minus",
     Category: "Tacos",
+    name: "Fish Tacos",
+    price: 170,
+    time: "40 minutes",
+    description:
+      "Crispy battered fish, topped with zesty slaw and creamy sauce, served in a soft tortilla.",
+    item1: "Lime",
+    item2: "Avocado",
+    item3: "Cabbage Slaw",
   },
   {
     id: "12",
     image: require("../../assets/images/Tacos/tacos4.jpg"),
-    time: "40 minus",
     Category: "Tacos",
+    name: "Veggie Tacos",
+    price: 140,
+    time: "40 minutes",
+    description:
+      "Loaded with fresh grilled veggies, black beans, and a tangy lime dressing.",
+    item1: "Black Beans",
+    item2: "Avocado",
+    item3: "Corn Salsa",
   },
   {
     id: "13",
     image: require("../../assets/images/Burger/burger1.jpg"),
-    time: "30 minus",
     Category: "Burger",
+    name: "Classic Beef Burger",
+    price: 180,
+    time: "30 minutes",
+    description:
+      "A juicy beef patty served in a soft bun with fresh lettuce, tomatoes, and a special sauce.",
+    item1: "Cheese",
+    item2: "Bacon",
+    item3: "Onions",
   },
   {
     id: "14",
     image: require("../../assets/images/Burger/burger2.jpg"),
-    time: "40 minus",
     Category: "Burger",
+    name: "Chicken Burger",
+    price: 170,
+    time: "40 minutes",
+    description:
+      "Crispy fried chicken patty with lettuce, mayo, and pickles on a toasted bun.",
+    item1: "Coleslaw",
+    item2: "Extra Mayo",
+    item3: "Cheddar Cheese",
   },
   {
     id: "15",
     image: require("../../assets/images/Burger/burger3.jpg"),
-    time: "40 minus",
     Category: "Burger",
+    name: "BBQ Bacon Burger",
+    price: 200,
+    time: "40 minutes",
+    description:
+      "A smoky BBQ burger with crispy bacon, cheddar cheese, and caramelized onions.",
+    item1: "BBQ Sauce",
+    item2: "Jalapeños",
+    item3: "Onion Rings",
   },
   {
     id: "16",
     image: require("../../assets/images/Burger/burger4.jpg"),
-    time: "40 minus",
     Category: "Burger",
+    name: "Veggie Burger",
+    price: 160,
+    time: "40 minutes",
+    description:
+      "A plant-based burger patty with fresh toppings and a zesty sauce on a whole wheat bun.",
+    item1: "Avocado",
+    item2: "Lettuce",
+    item3: "Tomato",
   },
 ];
 
 const Category = () => {
   const [changeCategory, setChangeCategory] = useState("Fried-Rice");
+  const navigation = useNavigation();
 
   const selectFoodCategory = (selectedFood) => {
     setChangeCategory(selectedFood);
+  };
+
+  const foodDetailsHandler = (item) => {
+    navigation.navigate("FoodDetails", { foodItem: item });
   };
 
   const filteredFoodData = useMemo(
@@ -182,7 +300,10 @@ const Category = () => {
           showsVerticalScrollIndicator={false}
           columnWrapperStyle={styles.gridWrapper}
           renderItem={({ item }) => (
-            <View style={styles.foodCard}>
+            <Pressable
+              onPress={() => foodDetailsHandler(item)}
+              style={styles.foodCard}
+            >
               <Image source={item.image} style={styles.image} />
               <View style={styles.overlay} />
 
@@ -198,7 +319,7 @@ const Category = () => {
               <View style={styles.detailsContainer}>
                 <Text style={styles.foodTitle}>Delicious Meal</Text>
               </View>
-            </View>
+            </Pressable>
           )}
         />
       </View>
@@ -231,13 +352,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
-    paddingVertical: 15,
-    paddingHorizontal: 25,
-    marginHorizontal: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginHorizontal: 8,
   },
   food: {
     color: Colors.primary100,
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: "OpenSans-Bold",
   },
   foodListContainer: {

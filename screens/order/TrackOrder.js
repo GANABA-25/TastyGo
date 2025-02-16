@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Cart = () => {
+const TrackOrder = () => {
   return (
     <View>
-      <Text>Cart</Text>
+      <Text>TrackOrder</Text>
     </View>
   );
 };
 
-export default Cart;
+export default TrackOrder;

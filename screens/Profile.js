@@ -1,7 +1,7 @@
 import { View, Text, Button } from "react-native";
 import { useContext } from "react";
 import React from "react";
-import { AuthContext } from "../store/auth-context";
+import { AuthContext } from "../store/AuthContext";
 
 const Profile = () => {
   const authCtx = useContext(AuthContext);

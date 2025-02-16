@@ -14,8 +14,8 @@ import {
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { useFonts } from "expo-font";
@@ -23,6 +23,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 import Colors from "./constants/Colors";
 
@@ -33,19 +34,19 @@ import Login from "./screens/authentication/Login";
 import SignUp from "./screens/authentication/SignUp";
 import Home from "./screens/home/Home";
 import Favourite from "./screens/Favourite";
-import Cart from "./screens/Cart";
+import Cart from "./screens/payments/Cart";
 import Profile from "./screens/Profile";
-
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 import PickBestFood from "./screens/onBoarding/PickBestFood";
 import FastDelivery from "./screens/onBoarding/FastDelivery";
 import LiveTracking from "./screens/onBoarding/LiveTracking";
 import GetStarted from "./screens/onBoarding/GetStarted";
 import FoodCategory from "./screens/onBoarding/FoodCategory";
+import FoodDetails from "./screens/FoodDetails";
+import BestDeals from "./screens/BestDeals";
 
-import AuthContextProvider from "./store/auth-context";
-import { AuthContext } from "./store/auth-context";
+import AppContextProvider from "./store/AppContextProvider";
+import { AuthContext } from "./store/AuthContext";
 
 function CustomSignUpHeader({ title }) {
   return (
@@ -120,6 +121,21 @@ const GetStartedStack = () => {
 
 const AuthenticatedStack = () => {
   return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: Colors.primary300 },
+      }}
+    >
+      <Stack.Screen name="MainTabs" component={MainTabs} />
+      <Stack.Screen name="FoodDetails" component={FoodDetails} />
+      <Stack.Screen name="BestDeals" component={BestDeals} />
+    </Stack.Navigator>
+  );
+};
+
+const MainTabs = () => {
+  return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: Colors.primary200,
@@ -153,9 +169,11 @@ const AuthenticatedStack = () => {
         name="Cart"
         component={Cart}
         options={{
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="cart-outline" size={25} color={color} />
           ),
+          tabBarBadge: 2,
         }}
       />
       <Tab.Screen
@@ -258,12 +276,12 @@ export default function App() {
   }, [loaded, error]);
 
   return (
-    <AuthContextProvider>
+    <AppContextProvider>
       <SafeAreaView style={styles.container}>
         <StatusBar style="light" />
         <Root />
       </SafeAreaView>
-    </AuthContextProvider>
+    </AppContextProvider>
   );
 }
 

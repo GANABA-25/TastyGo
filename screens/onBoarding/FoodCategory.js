@@ -8,7 +8,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Entypo from "@expo/vector-icons/Entypo";
 
-import { AuthContext } from "../../store/auth-context";
+import { AuthContext } from "../../store/AuthContext";
 
 import Button from "../../components/Button";
 
