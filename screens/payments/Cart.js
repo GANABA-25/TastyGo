@@ -3,14 +3,15 @@ import {
   Text,
   StyleSheet,
   Image,
-  ScrollView,
   FlatList,
+  Pressable,
 } from "react-native";
 
 import { useContext } from "react";
 import Colors from "../../constants/Colors";
 import Button from "../../components/Button";
 
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CartContext } from "../../store/CartContext";
@@ -18,29 +19,48 @@ import { CartContext } from "../../store/CartContext";
 const Cart = () => {
   const cartCtx = useContext(CartContext);
 
+  const addToCartHandler = (item) => {
+    cartCtx.addToCart(item);
+  };
+
+  const removeCartItemHandler = (item) => {
+    cartCtx.removeFromCart(item);
+  };
+
+  const removeItemCompletelyHandler = (item) => {
+    cartCtx.removeItemCompletely(item.id);
+  };
+
   return (
     <View style={styles.container}>
       {cartCtx.cartItems.length > 0 ? (
         <FlatList
           data={cartCtx.cartItems}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => {
+          renderItem={({ item }) => (
             <View style={styles.innerContainer}>
               <View style={styles.textsContainer}>
-                <Text style={styles.foodName}>{item.name} (Large)</Text>
+                <Text style={styles.foodName}>{item.name}</Text>
                 <Text style={styles.price}>GH₵ {item.price}</Text>
                 <View style={styles.iconsContainer}>
-                  <View style={styles.iconsView}>
+                  <Pressable
+                    onPress={() => removeCartItemHandler(item)}
+                    style={styles.iconsView}
+                  >
                     <Entypo name="minus" size={24} color={Colors.primary100} />
-                  </View>
-                  <Text style={styles.quantity}>2</Text>
-                  <View style={styles.iconsView}>
+                  </Pressable>
+                  <Text style={styles.quantity}>{item.quantity}</Text>
+                  <Pressable
+                    onPress={() => addToCartHandler(item)}
+                    style={styles.iconsView}
+                  >
                     <Entypo name="plus" size={24} color={Colors.primary100} />
-                  </View>
+                  </Pressable>
                 </View>
               </View>
               <View>
                 <AntDesign
+                  onPress={() => removeItemCompletelyHandler(item)}
                   style={styles.icon}
                   name="delete"
                   size={18}
@@ -48,42 +68,19 @@ const Cart = () => {
                 />
                 <Image style={styles.image} source={item.image} />
               </View>
-            </View>;
-          }}
+            </View>
+          )}
         />
       ) : (
-        <Text style={styles.emptyCartText}>Your cart is empty!</Text>
-      )}
-
-      {/* <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.innerContainer}>
-          <View style={styles.textsContainer}>
-            <Text style={styles.foodName}>Tacos (Large)</Text>
-            <Text style={styles.price}>GH₵ 100</Text>
-            <View style={styles.iconsContainer}>
-              <View style={styles.iconsView}>
-                <Entypo name="minus" size={24} color={Colors.primary100} />
-              </View>
-              <Text style={styles.quantity}>2</Text>
-              <View style={styles.iconsView}>
-                <Entypo name="plus" size={24} color={Colors.primary100} />
-              </View>
-            </View>
-          </View>
-          <View>
-            <AntDesign
-              style={styles.icon}
-              name="delete"
-              size={18}
-              color={Colors.primary100}
-            />
-            <Image
-              style={styles.image}
-              source={require("../../assets/images/Tacos/tacos1.jpg")}
-            />
-          </View>
+        <View style={styles.emptyCartContainer}>
+          <Text style={styles.emptyCartText}>Your cart is empty!</Text>
+          <MaterialCommunityIcons
+            name="flask-empty-outline"
+            size={25}
+            color={Colors.primary200}
+          />
         </View>
-      </ScrollView> */}
+      )}
 
       <View style={styles.priceContainer}>
         <View style={styles.priceInnerContainer}>
@@ -94,9 +91,9 @@ const Cart = () => {
           </View>
 
           <View style={styles.totalContainer}>
-            <Text style={styles.priceTexts}>GH₵ 280</Text>
+            <Text style={styles.priceTexts}>GH₵ {cartCtx.subtotal}</Text>
             <Text style={styles.priceTexts}>GH₵ 30</Text>
-            <Text style={styles.priceTexts}>GH₵ 310</Text>
+            <Text style={styles.priceTexts}>GH₵ {cartCtx.totalPrice}</Text>
           </View>
         </View>
         <Button title="Checkout" />
@@ -140,7 +137,7 @@ const styles = StyleSheet.create({
   },
   iconsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 20,
     alignItems: "center",
   },
   iconsView: {
@@ -163,6 +160,17 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 100,
     elevation: 20,
+  },
+  emptyCartContainer: {
+    flex: 1,
+    gap: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyCartText: {
+    color: Colors.primary100,
+    textAlign: "center",
+    fontSize: 20,
   },
   priceContainer: {
     padding: 20,
