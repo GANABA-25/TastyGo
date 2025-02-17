@@ -32,18 +32,9 @@ const CartContextProvider = ({ children }) => {
         return [
           ...prevCartItems,
           {
-            id: item.id,
-            image: item.image,
-            Category: item.Category,
-            name: item.name,
-            price: item.price,
+            ...item,
             deliveryPrice: 30,
             quantity: 1,
-            time: item.time,
-            description: item.description,
-            item1: item.item1,
-            item2: item.item2,
-            item3: item.item3,
             subtotal: item.price,
           },
         ];

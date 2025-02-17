@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -47,6 +46,7 @@ import BestDeals from "./screens/BestDeals";
 
 import AppContextProvider from "./store/AppContextProvider";
 import { AuthContext } from "./store/AuthContext";
+import { CartContext } from "./store/CartContext";
 
 function CustomSignUpHeader({ title }) {
   return (
@@ -135,6 +135,7 @@ const AuthenticatedStack = () => {
 };
 
 const MainTabs = () => {
+  const cartCtx = useContext(CartContext);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -173,7 +174,7 @@ const MainTabs = () => {
           tabBarIcon: ({ color }) => (
             <Ionicons name="cart-outline" size={25} color={color} />
           ),
-          tabBarBadge: 2,
+          tabBarBadge: cartCtx.totalQuantity,
         }}
       />
       <Tab.Screen
@@ -247,7 +248,7 @@ const Root = () => {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "red",
+          backgroundColor: Colors.primary300,
         }}
       >
         {/* <ActivityIndicator size="large" color={Colors.primary200} /> */}
