@@ -30,6 +30,12 @@
         {
           "fonts": ["path/to/file.ttf"]
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow TastyGo to use your location."
+        }
       ]
     ]
   }

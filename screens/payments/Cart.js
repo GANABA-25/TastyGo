@@ -16,7 +16,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { CartContext } from "../../store/CartContext";
 
-const Cart = () => {
+const Cart = ({ navigation }) => {
   const cartCtx = useContext(CartContext);
 
   const addToCartHandler = (item) => {
@@ -34,43 +34,74 @@ const Cart = () => {
   return (
     <View style={styles.container}>
       {cartCtx.cartItems.length > 0 ? (
-        <FlatList
-          data={cartCtx.cartItems}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.innerContainer}>
-              <View style={styles.textsContainer}>
-                <Text style={styles.foodName}>{item.name}</Text>
-                <Text style={styles.price}>GH₵ {item.price}</Text>
-                <View style={styles.iconsContainer}>
-                  <Pressable
-                    onPress={() => removeCartItemHandler(item)}
-                    style={styles.iconsView}
-                  >
-                    <Entypo name="minus" size={24} color={Colors.primary100} />
-                  </Pressable>
-                  <Text style={styles.quantity}>{item.quantity}</Text>
-                  <Pressable
-                    onPress={() => addToCartHandler(item)}
-                    style={styles.iconsView}
-                  >
-                    <Entypo name="plus" size={24} color={Colors.primary100} />
-                  </Pressable>
+        <View style={styles.cartContainer}>
+          <FlatList
+            data={cartCtx.cartItems}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.innerContainer}>
+                <View style={styles.textsContainer}>
+                  <Text style={styles.foodName}>{item.name}</Text>
+                  <Text style={styles.price}>GH₵ {item.price}</Text>
+                  <View style={styles.iconsContainer}>
+                    <Pressable
+                      onPress={() => removeCartItemHandler(item)}
+                      style={({ pressed }) => [
+                        styles.iconsView,
+                        pressed && styles.iconPressed,
+                      ]}
+                    >
+                      <Entypo
+                        name="minus"
+                        size={24}
+                        color={Colors.primary100}
+                      />
+                    </Pressable>
+                    <Text style={styles.quantity}>{item.quantity}</Text>
+                    <Pressable
+                      onPress={() => addToCartHandler(item)}
+                      style={({ pressed }) => [
+                        styles.iconsView,
+                        pressed && styles.iconPressed,
+                      ]}
+                    >
+                      <Entypo name="plus" size={24} color={Colors.primary100} />
+                    </Pressable>
+                  </View>
+                </View>
+                <View style={({ pressed }) => [pressed && styles.iconPressed]}>
+                  <AntDesign
+                    onPress={() => removeItemCompletelyHandler(item)}
+                    style={styles.icon}
+                    name="delete"
+                    size={18}
+                    color={Colors.primary100}
+                  />
+                  <Image style={styles.image} source={item.image} />
                 </View>
               </View>
-              <View>
-                <AntDesign
-                  onPress={() => removeItemCompletelyHandler(item)}
-                  style={styles.icon}
-                  name="delete"
-                  size={18}
-                  color={Colors.primary100}
-                />
-                <Image style={styles.image} source={item.image} />
+            )}
+          />
+          <View style={styles.priceContainer}>
+            <View style={styles.priceInnerContainer}>
+              <View style={styles.totalContainer}>
+                <Text style={styles.priceHeaders}>SubTotal </Text>
+                <Text style={styles.priceHeaders}>Delivery Charge</Text>
+                <Text style={styles.priceHeaders}>Total</Text>
+              </View>
+
+              <View style={styles.totalContainer}>
+                <Text style={styles.priceTexts}>GH₵ {cartCtx.subtotal}</Text>
+                <Text style={styles.priceTexts}>GH₵ 30</Text>
+                <Text style={styles.priceTexts}>GH₵ {cartCtx.totalPrice}</Text>
               </View>
             </View>
-          )}
-        />
+            <Button
+              onPress={() => navigation.navigate("CheckOut")}
+              title="Checkout"
+            />
+          </View>
+        </View>
       ) : (
         <View style={styles.emptyCartContainer}>
           <Text style={styles.emptyCartText}>Your cart is empty!</Text>
@@ -81,23 +112,6 @@ const Cart = () => {
           />
         </View>
       )}
-
-      <View style={styles.priceContainer}>
-        <View style={styles.priceInnerContainer}>
-          <View style={styles.totalContainer}>
-            <Text style={styles.priceHeaders}>SubTotal </Text>
-            <Text style={styles.priceHeaders}>Delivery Charge</Text>
-            <Text style={styles.priceHeaders}>Total</Text>
-          </View>
-
-          <View style={styles.totalContainer}>
-            <Text style={styles.priceTexts}>GH₵ {cartCtx.subtotal}</Text>
-            <Text style={styles.priceTexts}>GH₵ 30</Text>
-            <Text style={styles.priceTexts}>GH₵ {cartCtx.totalPrice}</Text>
-          </View>
-        </View>
-        <Button title="Checkout" />
-      </View>
     </View>
   );
 };
@@ -109,6 +123,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.primary300,
     paddingHorizontal: 5,
+  },
+  cartContainer: {
+    flex: 1,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -145,6 +162,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 5,
+  },
+  iconPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
   },
   quantity: {
     fontFamily: "OpenSans-Regular",

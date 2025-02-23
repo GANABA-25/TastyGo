@@ -23,6 +23,7 @@ import * as SplashScreen from "expo-splash-screen";
 import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import Colors from "./constants/Colors";
 
@@ -43,6 +44,8 @@ import GetStarted from "./screens/onBoarding/GetStarted";
 import FoodCategory from "./screens/onBoarding/FoodCategory";
 import FoodDetails from "./screens/FoodDetails";
 import BestDeals from "./screens/BestDeals";
+import CheckOut from "./screens/payments/CheckOut";
+import PickLocation from "./screens/PickLocation";
 
 import AppContextProvider from "./store/AppContextProvider";
 import { AuthContext } from "./store/AuthContext";
@@ -123,18 +126,60 @@ const AuthenticatedStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
         contentStyle: { backgroundColor: Colors.primary300 },
       }}
     >
-      <Stack.Screen name="MainTabs" component={MainTabs} />
-      <Stack.Screen name="FoodDetails" component={FoodDetails} />
+      <Stack.Screen
+        name="MainTabs"
+        component={MainTabs}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="FoodDetails"
+        component={FoodDetails}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stack.Screen name="BestDeals" component={BestDeals} />
+      <Stack.Screen
+        name="CheckOut"
+        component={CheckOut}
+        options={{
+          title: "Checkout",
+          headerStyle: {
+            backgroundColor: Colors.primary300,
+          },
+          headerTintColor: Colors.primary100,
+          headerTitleStyle: {
+            fontFamily: "OpenSans-Bold",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <Stack.Screen
+        name="PickLocation"
+        component={PickLocation}
+        options={{
+          title: "Select Location",
+          headerStyle: {
+            backgroundColor: Colors.primary300,
+          },
+          headerTintColor: Colors.primary200,
+          headerTitleStyle: {
+            fontFamily: "OpenSans-Bold",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
     </Stack.Navigator>
   );
 };
 
 const MainTabs = () => {
+  const navigation = useNavigation();
   const cartCtx = useContext(CartContext);
   return (
     <Tab.Navigator
@@ -170,11 +215,19 @@ const MainTabs = () => {
         name="Cart"
         component={Cart}
         options={{
-          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="cart-outline" size={25} color={color} />
           ),
           tabBarBadge: cartCtx.totalQuantity,
+          headerStyle: {
+            backgroundColor: Colors.primary300,
+          },
+          headerTintColor: Colors.primary100,
+          headerTitleStyle: {
+            fontFamily: "OpenSans-Bold",
+            fontSize: 25,
+          },
+          headerTitleAlign: "center",
         }}
       />
       <Tab.Screen

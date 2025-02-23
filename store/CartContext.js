@@ -81,7 +81,6 @@ const CartContextProvider = ({ children }) => {
     totalQuantity,
     subtotal,
     totalPrice,
-    clearCart: () => {},
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -47,12 +47,11 @@ const FoodDetails = ({ navigation }) => {
             color={Colors.primary100}
             style={styles.iconLeft}
           />
-          <FontAwesome
-            name="bell-o"
-            size={20}
-            color={Colors.primary100}
-            style={styles.iconRight}
-          />
+
+          <View style={styles.iconRight}>
+            <Ionicons name="cart-outline" size={20} color={Colors.primary200} />
+            <Text style={styles.cartMessage}>{cartCtx.totalQuantity}</Text>
+          </View>
         </View>
       </View>
 
@@ -109,8 +108,14 @@ const FoodDetails = ({ navigation }) => {
         <Pressable style={styles.amount}>
           <Text style={styles.price}>${foodItem.price.toFixed(2)}</Text>
         </Pressable>
-        <Pressable onPress={addToCartHandler}>
-          <Text style={styles.text}>Tap to add to cart</Text>
+        <Pressable
+          style={({ pressed }) => [
+            styles.addToCartButton,
+            pressed && styles.buttonPressed,
+          ]}
+          onPress={addToCartHandler}
+        >
+          <Text style={styles.buttonText}>Tap to add to cart</Text>
         </Pressable>
       </View>
     </View>
@@ -153,7 +158,14 @@ const styles = StyleSheet.create({
   },
   iconRight: {
     position: "absolute",
+    flexDirection: "row",
     right: 15,
+  },
+  cartMessage: {
+    fontFamily: "OpenSans-Bold",
+    alignSelf: "flex-end",
+    color: Colors.primary200,
+    bottom: 15,
   },
   content: {
     flex: 1,
@@ -175,6 +187,22 @@ const styles = StyleSheet.create({
     color: Colors.primary100,
     fontSize: 13,
     fontFamily: "OpenSans-Regular",
+  },
+  buttonText: {
+    color: Colors.primary400,
+    fontSize: 13,
+    fontFamily: "OpenSans-Regular",
+  },
+  addToCartButton: {
+    backgroundColor: Colors.primary100,
+    padding: 7,
+    borderRadius: 10,
+    elevation: 5,
+    shadowColor: Colors.primary200,
+  },
+  buttonPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
   },
   time: {
     flexDirection: "row",

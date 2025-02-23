@@ -1,10 +1,13 @@
 import AuthContextProvider from "./AuthContext";
 import CartContextProvider from "./CartContext";
+import LocationContextProvider from "./locationContext";
 
 const AppContextProvider = ({ children }) => {
   return (
     <AuthContextProvider>
-      <CartContextProvider>{children}</CartContextProvider>
+      <CartContextProvider>
+        <LocationContextProvider>{children}</LocationContextProvider>
+      </CartContextProvider>
     </AuthContextProvider>
   );
 };

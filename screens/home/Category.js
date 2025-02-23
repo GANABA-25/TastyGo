@@ -283,7 +283,10 @@ const Category = () => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => selectFoodCategory(item.food)}
-              style={styles.categoryItems}
+              style={({ pressed }) => [
+                styles.categoryItems,
+                pressed && styles.categoryItemsPressed,
+              ]}
             >
               {item.icon}
               <Text style={styles.food}>{item.food}</Text>
@@ -302,7 +305,10 @@ const Category = () => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => foodDetailsHandler(item)}
-              style={styles.foodCard}
+              style={({ pressed }) => [
+                styles.foodCard,
+                pressed && styles.foodCardItemsPressed,
+              ]}
             >
               <Image source={item.image} style={styles.image} />
               <View style={styles.overlay} />
@@ -356,6 +362,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginHorizontal: 8,
   },
+  categoryItemsPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.95 }],
+  },
   food: {
     color: Colors.primary100,
     fontSize: 20,
@@ -380,6 +390,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 4 },
+  },
+  foodCardItemsPressed: {
+    opacity: 0.8,
   },
   image: {
     width: "100%",
