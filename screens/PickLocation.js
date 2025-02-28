@@ -1,4 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import { useState, useContext } from "react";
 import RNPickerSelect from "react-native-picker-select";
 import { LocationContext } from "../store/locationContext";
@@ -14,6 +20,7 @@ import { fetchLocation } from "../components/fetchLocation";
 const PickLocation = ({ navigation }) => {
   const locationCtx = useContext(LocationContext);
   const [userLocation, setUserLocation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [locationData, setLocationData] = useState({
     email: "",
     phoneNumber: "",
@@ -29,8 +36,28 @@ const PickLocation = ({ navigation }) => {
   };
 
   const pickedLocationHandler = async () => {
-    const fetchedLocationUserLocation = await fetchLocation();
-    setUserLocation(fetchedLocationUserLocation);
+    setIsLoading(true);
+
+    try {
+      const fetchedLocationUserLocation = await fetchLocation();
+
+      if (fetchedLocationUserLocation) {
+        setUserLocation(fetchedLocationUserLocation);
+      } else {
+        Alert.alert(
+          "Location Error",
+          "Could not fetch location. Please try again."
+        );
+      }
+    } catch (error) {
+      Alert.alert(
+        "Unexpected Error",
+        "Something went wrong fetching location."
+      );
+      console.error(error);
+    }
+
+    setIsLoading(false);
   };
 
   const SubmitHandler = () => {
@@ -72,6 +99,7 @@ const PickLocation = ({ navigation }) => {
           icon="call-sharp"
           type="number"
           TextInputConfig={{
+            keyboardType: "numeric",
             autoCorrect: false,
             placeholder: "Enter Phone Number",
             value: locationData.phoneNumber,
@@ -95,9 +123,19 @@ const PickLocation = ({ navigation }) => {
           />
         </View>
 
-        <Text onPress={pickedLocationHandler} style={styles.currentLocation}>
-          Pick Current Location
-        </Text>
+        <TouchableOpacity
+          onPress={pickedLocationHandler}
+          style={styles.currentLocation}
+        >
+          <View style={styles.currentLocationContent}>
+            <Text style={styles.currentLocationText}>
+              Pick Current Location
+            </Text>
+            {isLoading && (
+              <ActivityIndicator size="small" color={Colors.primary200} />
+            )}
+          </View>
+        </TouchableOpacity>
 
         <View>
           {!userLocation ? (
@@ -144,13 +182,9 @@ const styles = StyleSheet.create({
     color: Colors.primary100,
   },
   currentLocation: {
-    fontFamily: "OpenSans-Bold",
-    fontSize: 12,
-    textTransform: "uppercase",
     backgroundColor: Colors.primary100,
     paddingVertical: 12,
     paddingHorizontal: 16,
-    textAlign: "center",
     borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -158,6 +192,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 6,
     overflow: "hidden",
+  },
+
+  currentLocationContent: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  currentLocationText: {
+    fontFamily: "OpenSans-Bold",
+    fontSize: 12,
+    textTransform: "uppercase",
+    color: Colors.primary400,
   },
   userLocation: {
     width: "100%",

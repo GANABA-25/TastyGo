@@ -48,12 +48,12 @@ const Payment = () => {
     if (selectedCardPayment) {
       console.log("You can only use one PaymentMethod");
     } else {
-      setSelectedPaymentMethod(id);
+      setSelectedPaymentMethod((prev) => (prev === id ? null : id));
     }
   };
 
   const selectedCardPaymentHandler = (id) => {
-    setSelectedCardPayment(id);
+    setSelectedCardPayment((prev) => (prev === id ? null : id));
     setSelectedPaymentMethod(null);
   };
 
@@ -64,8 +64,7 @@ const Payment = () => {
   return (
     <View style={styles.screen}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.paymentText}>Select your method of payment</Text>
-
+        <Text style={styles.paymentText}>Select your payment method</Text>
         <View>
           <Text style={styles.paymentText}>Cards</Text>
           <FlatList
@@ -117,7 +116,6 @@ const Payment = () => {
         </View>
       </ScrollView>
 
-      {/* Fixed button at the bottom */}
       <View style={styles.buttonContainer}>
         <Button onPress={PaymentHandler} title="Pay Now" />
       </View>
@@ -129,11 +127,11 @@ export default Payment;
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1, // Makes sure the main container takes full height
+    flex: 1,
   },
   scrollContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 20, // Adds spacing above button
+    paddingBottom: 20,
   },
   paymentText: {
     color: Colors.primary100,
@@ -152,7 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   selectedPayment: {
-    borderWidth: 3,
+    borderWidth: 1,
     borderColor: Colors.primary200,
     borderRadius: 20,
   },
@@ -170,7 +168,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: Colors.primary400,
-    padding: 15,
+    padding: 20,
     borderRadius: 10,
   },
   otherPayments: {
