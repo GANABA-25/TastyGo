@@ -115,7 +115,10 @@ const CheckOut = ({ navigation }) => {
               <Text style={styles.addNewAddressButtonText}>ADD A LOCATION</Text>
             </Pressable>
             <View style={styles.nestButton}>
-              <Button title="Next" />
+              <Button
+                onPress={() => navigation.navigate("Payment")}
+                title="Next"
+              />
             </View>
           </View>
         </>

@@ -45,6 +45,7 @@ import FoodCategory from "./screens/onBoarding/FoodCategory";
 import FoodDetails from "./screens/FoodDetails";
 import BestDeals from "./screens/BestDeals";
 import CheckOut from "./screens/payments/CheckOut";
+import Payment from "./screens/payments/Payment";
 import PickLocation from "./screens/PickLocation";
 
 import AppContextProvider from "./store/AppContextProvider";
@@ -149,6 +150,21 @@ const AuthenticatedStack = () => {
         component={CheckOut}
         options={{
           title: "Checkout",
+          headerStyle: {
+            backgroundColor: Colors.primary300,
+          },
+          headerTintColor: Colors.primary100,
+          headerTitleStyle: {
+            fontFamily: "OpenSans-Bold",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={Payment}
+        options={{
+          title: "Payment",
           headerStyle: {
             backgroundColor: Colors.primary300,
           },
