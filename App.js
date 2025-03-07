@@ -47,6 +47,7 @@ import BestDeals from "./screens/BestDeals";
 import CheckOut from "./screens/payments/CheckOut";
 import Payment from "./screens/payments/Payment";
 import PickLocation from "./screens/PickLocation";
+import OrderReview from "./screens/order/OrderReview";
 
 import AppContextProvider from "./store/AppContextProvider";
 import { AuthContext } from "./store/AuthContext";
@@ -183,7 +184,22 @@ const AuthenticatedStack = () => {
           headerStyle: {
             backgroundColor: Colors.primary300,
           },
-          headerTintColor: Colors.primary200,
+          headerTintColor: Colors.primary100,
+          headerTitleStyle: {
+            fontFamily: "OpenSans-Bold",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <Stack.Screen
+        name="OrderReview"
+        component={OrderReview}
+        options={{
+          title: "Order Review",
+          headerStyle: {
+            backgroundColor: Colors.primary300,
+          },
+          headerTintColor: Colors.primary100,
           headerTitleStyle: {
             fontFamily: "OpenSans-Bold",
           },
@@ -321,7 +337,7 @@ const Root = () => {
         }}
       >
         {/* <ActivityIndicator size="large" color={Colors.primary200} /> */}
-        <FontAwesome5 name="pizza-slice" size={24} color={Colors.primary200} />
+        <FontAwesome5 name="pizza-slice" size={35} color={Colors.primary200} />
       </View>
     );
   }

@@ -40,7 +40,7 @@ const OtherPaymentsData = [
   },
 ];
 
-const Payment = () => {
+const Payment = ({ navigation }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [selectedCardPayment, setSelectedCardPayment] = useState(null);
 
@@ -59,6 +59,7 @@ const Payment = () => {
 
   const PaymentHandler = () => {
     console.log("payment Handler");
+    navigation.navigate("OrderReview");
   };
 
   return (
