@@ -12,10 +12,10 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const CheckOut = ({ navigation }) => {
   const LocationCtx = useContext(LocationContext);
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState("");
 
-  const selectedLocationHandler = (id) => {
-    setSelectedId(id);
+  const selectedLocationHandler = (item) => {
+    setSelectedLocation(item);
   };
 
   const deleteLocationHandler = (id) => {
@@ -47,10 +47,12 @@ const CheckOut = ({ navigation }) => {
             renderItem={({ item }) => (
               <View style={styles.container}>
                 <Pressable
-                  onPress={() => selectedLocationHandler(item.id)}
+                  onPress={() => selectedLocationHandler(item)}
                   style={[
                     styles.innerContainer,
-                    selectedId === item.id ? styles.selectedLocation : "",
+                    selectedLocation.id === item.id
+                      ? styles.selectLocation
+                      : "",
                   ]}
                 >
                   <View style={styles.locationContainer}>
@@ -116,7 +118,9 @@ const CheckOut = ({ navigation }) => {
             </Pressable>
             <View style={styles.nestButton}>
               <Button
-                onPress={() => navigation.navigate("Payment")}
+                onPress={() =>
+                  navigation.navigate("Payment", { selectedLocation })
+                }
                 title="Next"
               />
             </View>
@@ -163,7 +167,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     elevation: 10,
   },
-  selectedLocation: {
+  selectLocation: {
     borderWidth: 3,
     borderColor: Colors.primary200,
     borderRadius: 20,

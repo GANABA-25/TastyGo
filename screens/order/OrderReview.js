@@ -5,39 +5,48 @@ import Button from "../../components/Button";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-const OrderReview = ({ navigation }) => {
+const OrderReview = ({ navigation, route }) => {
+  const { selectedPaymentMethod, selectedLocation } = route.params;
+
+  console.log(selectedPaymentMethod);
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
-        {/* All your existing content goes inside this View */}
         <Text style={styles.deliveryText}>Delivery Address</Text>
         <View style={styles.borderContainer}>
           <View style={styles.selectedLocationInnerContainer}>
             <View style={styles.selectedLocation}>
               <Ionicons name="home" size={15} color={Colors.primary200} />
-              <Text style={styles.place}>Home</Text>
+              <Text style={styles.place}>{selectedLocation.locationType}</Text>
             </View>
 
             <View>
               <AntDesign name="edit" size={20} color={Colors.primary100} />
             </View>
           </View>
-          <Text style={styles.route}>Aplaku Route</Text>
+          <Text style={styles.route}>{selectedLocation.location}</Text>
         </View>
 
-        <View style={styles.borderContainer}>
-          <Text style={styles.otherMethod}>Other Methods</Text>
-          <View style={styles.methodsInnerContainer}>
-            <View style={styles.otherPayments}>
-              <Image
-                source={require("../../assets/images/payments/mtn.png")}
-                style={styles.methodImage}
-              />
-              <Text style={styles.methodsText}>MTN</Text>
+        {selectedPaymentMethod.id === 1 || selectedPaymentMethod.id === 2 ? (
+          <Image source={selectedPaymentMethod.image} style={styles.image} />
+        ) : (
+          <View style={styles.borderContainer}>
+            <Text style={styles.otherMethod}>Other Methods</Text>
+            <View style={styles.methodsInnerContainer}>
+              <View style={styles.otherPayments}>
+                <Image
+                  source={selectedPaymentMethod.image}
+                  style={styles.methodImage}
+                />
+                <Text style={styles.methodsText}>
+                  {selectedPaymentMethod.name}
+                </Text>
+              </View>
+              <AntDesign name="edit" size={15} color={Colors.primary100} />
             </View>
-            <AntDesign name="edit" size={15} color={Colors.primary100} />
           </View>
-        </View>
+        )}
 
         <View style={styles.borderContainer}>
           <Text style={styles.orderHeader}>Your Order</Text>
@@ -78,8 +87,8 @@ const OrderReview = ({ navigation }) => {
 
       <View style={styles.bottomButtonContainer}>
         <Button
-          onPress={() => navigation.navigate("CheckOut")}
-          title="Checkout"
+          // onPress={() => navigation.navigate("CheckOut")}
+          title="Place Order"
         />
       </View>
     </View>
@@ -97,12 +106,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bottomButtonContainer: {
-    paddingVertical: 10,
+    bottom: 15,
   },
   deliveryText: {
     color: Colors.primary100,
     fontFamily: "OpenSans-Bold",
     fontSize: 15,
+  },
+  image: {
+    width: 290,
+    height: 200,
   },
   borderContainer: {
     borderBottomWidth: 0.3,
@@ -133,6 +146,8 @@ const styles = StyleSheet.create({
   otherMethod: {
     color: Colors.primary100,
     paddingVertical: 20,
+    fontFamily: "OpenSans-Bold",
+    fontSize: 15,
   },
   methodsInnerContainer: {
     flexDirection: "row",
@@ -197,11 +212,13 @@ const styles = StyleSheet.create({
   priceHeaders: {
     fontFamily: "OpenSans-Bold",
     color: Colors.primary100,
-    fontSize: 15,
+    fontSize: 20,
+    opacity: 0.9,
   },
   priceTexts: {
     fontFamily: "OpenSans-Regular",
     color: Colors.primary100,
-    fontSize: 15,
+    fontSize: 20,
+    opacity: 0.9,
   },
 });

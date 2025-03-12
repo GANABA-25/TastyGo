@@ -30,7 +30,6 @@ const Login = () => {
   };
 
   const SubmitHandler = () => {
-    console.log(LoginData);
     const token = "12345678910";
     authCtx.authenticate(token);
   };

@@ -20,7 +20,7 @@ import { fetchLocation } from "../components/fetchLocation";
 
 const PickLocation = ({ navigation }) => {
   const locationCtx = useContext(LocationContext);
-  const [userLocation, setUserLocation] = useState(null); // Initialize with null instead of ""
+  const [userLocation, setUserLocation] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [locationData, setLocationData] = useState({
@@ -46,14 +46,14 @@ const PickLocation = ({ navigation }) => {
       if (fetchedLocationUserLocation) {
         setUserLocation(fetchedLocationUserLocation);
       } else {
-        setUserLocation(null); // Set userLocation to null explicitly on error
+        setUserLocation(null);
         Alert.alert(
           "Location Error",
           "Could not fetch location. Please try again."
         );
       }
     } catch (error) {
-      setUserLocation(null); // Set userLocation to null explicitly on error
+      setUserLocation(null);
       Alert.alert(
         "Unexpected Error",
         "Something went wrong fetching location."

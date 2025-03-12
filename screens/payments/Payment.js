@@ -1,13 +1,13 @@
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
   Image,
-  Pressable,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
 import Colors from "../../constants/Colors";
 import Button from "../../components/Button";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -19,47 +19,42 @@ const paymentsData = [
 
 const OtherPaymentsData = [
   {
-    id: 1,
+    id: 3,
     image: require("../../assets/images/payments/mtn.png"),
     name: "MTN",
   },
   {
-    id: 2,
+    id: 4,
     image: require("../../assets/images/payments/telecel.webp"),
     name: "Telecel",
   },
   {
-    id: 3,
+    id: 5,
     image: require("../../assets/images/payments/airtelTigo.webp"),
     name: "AirtelTigo",
   },
   {
-    id: 4,
+    id: 6,
     image: require("../../assets/images/payments/cash.png"),
     name: "Cash",
   },
 ];
 
-const Payment = ({ navigation }) => {
+const Payment = ({ navigation, route }) => {
+  const { selectedLocation } = route.params;
+  const [selectPaymentMethod, setSelectPaymentMethod] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-  const [selectedCardPayment, setSelectedCardPayment] = useState(null);
 
-  const selectedPaymentMethodHandler = (id) => {
-    if (selectedCardPayment) {
-      console.log("You can only use one PaymentMethod");
-    } else {
-      setSelectedPaymentMethod((prev) => (prev === id ? null : id));
-    }
-  };
-
-  const selectedCardPaymentHandler = (id) => {
-    setSelectedCardPayment((prev) => (prev === id ? null : id));
-    setSelectedPaymentMethod(null);
+  const selectedPaymentMethodHandler = (item) => {
+    setSelectedPaymentMethod(item);
+    setSelectPaymentMethod((prev) => (prev === item.id ? null : item.id));
   };
 
   const PaymentHandler = () => {
-    console.log("payment Handler");
-    navigation.navigate("OrderReview");
+    navigation.navigate("OrderReview", {
+      selectedPaymentMethod,
+      selectedLocation,
+    });
   };
 
   return (
@@ -74,18 +69,16 @@ const Payment = ({ navigation }) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <Pressable
+              <TouchableOpacity
                 key={item.id}
-                onPress={() => selectedCardPaymentHandler(item.id)}
+                onPress={() => selectedPaymentMethodHandler(item)}
                 style={[
                   styles.cardContainer,
-                  selectedCardPayment === item.id
-                    ? styles.selectedPayment
-                    : null,
+                  selectPaymentMethod === item.id && styles.selectedPayment,
                 ]}
               >
                 <Image source={item.image} style={styles.image} />
-              </Pressable>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -93,9 +86,9 @@ const Payment = ({ navigation }) => {
         <View style={styles.methodsContainer}>
           <Text style={styles.methodHeader}>Other Methods</Text>
           {OtherPaymentsData.map((paymentData) => (
-            <Pressable
+            <TouchableOpacity
               key={paymentData.id}
-              onPress={() => selectedPaymentMethodHandler(paymentData.id)}
+              onPress={() => selectedPaymentMethodHandler(paymentData)}
               style={styles.methodsInnerContainer}
             >
               <View style={styles.otherPayments}>
@@ -105,14 +98,12 @@ const Payment = ({ navigation }) => {
 
               <FontAwesome
                 name={
-                  selectedPaymentMethod === paymentData.id
-                    ? "circle"
-                    : "circle-o"
+                  selectPaymentMethod === paymentData.id ? "circle" : "circle-o"
                 }
                 size={20}
                 color={Colors.primary200}
               />
-            </Pressable>
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
