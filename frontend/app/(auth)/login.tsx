@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -7,7 +8,84 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { router } from "expo-router";
 import { Lock, Mail } from "lucide-react-native";
 
+import { loginTypes } from "@/src/types/authTypes";
+import { login } from "@/src/util/https";
+import { validateLoginInData } from "@/src/util/validation";
+import { useMutation } from "@tanstack/react-query";
+
 export default function LoginScreen() {
+  const [serverErrors, setServerErrors] = useState<
+    Partial<Record<keyof loginTypes, string>>
+  >({});
+
+  const [loginData, setLoginData] = useState<loginTypes>({
+    email: "",
+    password: "",
+  });
+
+  const [didEdit, setDidEdit] = useState<Record<keyof loginTypes, boolean>>({
+    email: false,
+    password: false,
+  });
+
+  const { mutate, isError, isPending } = useMutation({
+    mutationFn: login,
+  });
+
+  const validationErrors = validateLoginInData(loginData);
+
+  const getFieldError = (field: keyof loginTypes) => {
+    if (didEdit[field]) {
+      return validationErrors[field];
+    }
+
+    return serverErrors[field];
+  };
+
+  const inputChangeHandler = (
+    inputIdentifier: keyof loginTypes,
+    value: string,
+  ) => {
+    setLoginData((prev) => ({
+      ...prev,
+      [inputIdentifier]: value,
+    }));
+
+    setDidEdit((prev) => ({
+      ...prev,
+      [inputIdentifier]: false,
+    }));
+
+    setServerErrors((prev) => ({
+      ...prev,
+      [inputIdentifier]: "",
+    }));
+  };
+
+  const inputBlurHandler = (identifier: keyof loginTypes) => {
+    setDidEdit((prev) => ({
+      ...prev,
+      [identifier]: true,
+    }));
+  };
+
+  const createAccountHandler = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setDidEdit({
+      email: true,
+      password: true,
+    });
+
+    const errors = validateLoginInData(loginData);
+
+    if (Object.values(errors).some((error) => error !== "")) {
+      return;
+    }
+
+    mutate(loginData);
+  };
+
   return (
     <SafeAreaView className="flex-1 justify-center gap-8 px-8">
       <View className="flex-col gap-4 justify-center items-center">
