@@ -1,3 +1,5 @@
+import { queryClient } from "@/src/lib/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import React from "react";
@@ -13,5 +15,9 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Stack screenOptions={{ headerShown: false }} />;
+    </QueryClientProvider>
+  );
 }

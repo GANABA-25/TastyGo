@@ -16,7 +16,7 @@ const Input = ({ label, placeholder, icon: Icon }: InputProps) => {
         {Icon && <Icon size={20} color="#9CA3AF" strokeWidth={2} />}
 
         <TextInput
-          className="flex-1 py-4 ml-3"
+          className="flex-1 py-4 ml-3 font-inter"
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
         />

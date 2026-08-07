@@ -1,10 +1,11 @@
+import { Pressable, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import Button from "@/src/components/button";
 import Input from "@/src/components/Input";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { router } from "expo-router";
 import { Lock, Mail } from "lucide-react-native";
-import React from "react";
-import { Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   return (
@@ -16,20 +17,21 @@ export default function LoginScreen() {
         </Text>
       </View>
 
-      <View className="flex-row justify-between items-center bg-gray-200 p-2 rounded-full">
-        <Text className="bg-white p-4 px-20 rounded-full font-inter-bold">
+      <View className="bg-gray-200 rounded-full p-1 self-center">
+        <Text className="bg-white px-20 py-3 rounded-full font-inter-bold text-gray-900">
           Sign in
         </Text>
-        <Text className="p-4 px-20 rounded-full font-inter-bold">Sign up</Text>
       </View>
 
       <Input label="Email" placeholder="Email address" icon={Mail} />
+
       <Input label="Password" placeholder="Password" icon={Lock} />
+
       <Text className="text-right font-inter-bold text-primary">
-        Forget Password
+        Forget Password?
       </Text>
 
-      <Button label="Sign in" />
+      <Button onPress={() => router.replace("/home")} label="Sign in" />
 
       <View className="flex-row justify-center items-center gap-4">
         <View className="bg-gray-200 w-1/4 h-1" />
@@ -42,8 +44,15 @@ export default function LoginScreen() {
         <Text className=" font-inter-bold">Google</Text>
       </View>
 
+      <View className="flex-row justify-center items-center gap-2">
+        <Text className="font-inter">Don't have an account?</Text>
+        <Pressable onPress={() => router.push("/register")}>
+          <Text className="text-primary font-inter-bold">Create Account</Text>
+        </Pressable>
+      </View>
+
       <Text className=" font-inter text-gray-500 text-center">
-        By continuing you agree to QuickBite's Terms of Service and Privacy
+        By continuing you agree to TastyGo's Terms of Service and Privacy
         Policy.
       </Text>
     </SafeAreaView>
