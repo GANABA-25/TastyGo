@@ -2,7 +2,7 @@ import { LucideIcon } from "lucide-react-native";
 import { Text, TextInput, View } from "react-native";
 
 type InputProps = {
-  label: string;
+  label?: string;
   placeholder: string;
   icon?: LucideIcon;
 };
