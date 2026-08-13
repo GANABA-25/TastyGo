@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import Button from "@/src/components/button";
@@ -30,6 +36,14 @@ export default function LoginScreen() {
 
   const { mutate, isError, isPending } = useMutation({
     mutationFn: login,
+
+    onSuccess: (data) => {
+      console.log(data);
+    },
+
+    onError: (error) => {
+      console.log(error);
+    },
   });
 
   const validationErrors = validateLoginInData(loginData);
@@ -69,9 +83,7 @@ export default function LoginScreen() {
     }));
   };
 
-  const createAccountHandler = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const loginHandler = () => {
     setDidEdit({
       email: true,
       password: true,
@@ -83,56 +95,85 @@ export default function LoginScreen() {
       return;
     }
 
+    console.log(loginData);
+
     mutate(loginData);
   };
 
   return (
-    <SafeAreaView className="flex-1 justify-center gap-8 px-8">
-      <View className="flex-col gap-4 justify-center items-center">
-        <Text className="text-3xl font-inter-bold">Welcome back</Text>
-        <Text className="text-sm font-inter">
-          Sign in to pick up where you left off.
+    <SafeAreaView className="flex-1">
+      <KeyboardAvoidingView
+        className="flex-1 justify-center gap-8 px-8"
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <View className="flex-col gap-4 justify-center items-center">
+          <Text className="text-3xl font-inter-bold">Welcome back</Text>
+          <Text className="text-sm font-inter">
+            Sign in to pick up where you left off.
+          </Text>
+        </View>
+
+        <View className="bg-gray-200 rounded-full p-1 self-center">
+          <Text className="bg-white px-20 py-3 rounded-full font-inter-bold text-gray-900">
+            Sign in
+          </Text>
+        </View>
+
+        <Input
+          label="Email"
+          icon={Mail}
+          error={getFieldError("email")}
+          TextInputConfig={{
+            autoCorrect: false,
+            placeholder: "Email address",
+            onChangeText: (text) => inputChangeHandler("email", text),
+            onBlur: () => inputBlurHandler("email"),
+            value: loginData.email,
+          }}
+        />
+
+        <Input
+          label="Password"
+          icon={Lock}
+          error={getFieldError("password")}
+          TextInputConfig={{
+            autoCorrect: false,
+            placeholder: "Enter password",
+            onChangeText: (text) => inputChangeHandler("password", text),
+            onBlur: () => inputBlurHandler("password"),
+            value: loginData.password,
+          }}
+        />
+
+        <Text className="text-right font-inter-bold text-primary">
+          Forget Password?
         </Text>
-      </View>
 
-      <View className="bg-gray-200 rounded-full p-1 self-center">
-        <Text className="bg-white px-20 py-3 rounded-full font-inter-bold text-gray-900">
-          Sign in
+        <Button onPress={loginHandler} label="Sign in" />
+
+        <View className="flex-row justify-center items-center gap-4">
+          <View className="bg-gray-200 w-1/4 h-1" />
+          <Text className="font-inter">or continue with </Text>
+          <View className="bg-gray-200 w-1/4 h-1" />
+        </View>
+
+        <View className="flex-row justify-center items-center gap-4 border p-4 border-gray-200 rounded-full bg-white elevation-sm">
+          <Ionicons name="logo-google" size={24} color="black" />
+          <Text className=" font-inter-bold">Google</Text>
+        </View>
+
+        <View className="flex-row justify-center items-center gap-2">
+          <Text className="font-inter">Don't have an account?</Text>
+          <Pressable onPress={() => router.replace("/register")}>
+            <Text className="text-primary font-inter-bold">Create Account</Text>
+          </Pressable>
+        </View>
+
+        <Text className=" font-inter text-gray-500 text-center">
+          By continuing you agree to TastyGo's Terms of Service and Privacy
+          Policy.
         </Text>
-      </View>
-
-      <Input label="Email" placeholder="Email address" icon={Mail} />
-
-      <Input label="Password" placeholder="Password" icon={Lock} />
-
-      <Text className="text-right font-inter-bold text-primary">
-        Forget Password?
-      </Text>
-
-      <Button onPress={() => router.replace("/home")} label="Sign in" />
-
-      <View className="flex-row justify-center items-center gap-4">
-        <View className="bg-gray-200 w-1/4 h-1" />
-        <Text className="font-inter">or continue with </Text>
-        <View className="bg-gray-200 w-1/4 h-1" />
-      </View>
-
-      <View className="flex-row justify-center items-center gap-4 border p-4 border-gray-200 rounded-full bg-white elevation-sm">
-        <Ionicons name="logo-google" size={24} color="black" />
-        <Text className=" font-inter-bold">Google</Text>
-      </View>
-
-      <View className="flex-row justify-center items-center gap-2">
-        <Text className="font-inter">Don't have an account?</Text>
-        <Pressable onPress={() => router.push("/register")}>
-          <Text className="text-primary font-inter-bold">Create Account</Text>
-        </Pressable>
-      </View>
-
-      <Text className=" font-inter text-gray-500 text-center">
-        By continuing you agree to TastyGo's Terms of Service and Privacy
-        Policy.
-      </Text>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
