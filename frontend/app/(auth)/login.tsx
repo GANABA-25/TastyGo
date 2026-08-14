@@ -47,7 +47,7 @@ export default function LoginScreen() {
     mutationFn: login,
 
     onSuccess: (data) => {
-      authenticate(data.user);
+      authenticate(data);
       router.replace("/home");
     },
 

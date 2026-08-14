@@ -1,8 +1,4 @@
-import {
-  createAccountTypes,
-  loginTypes,
-  SignInResponse,
-} from "../types/authTypes";
+import { createAccountTypes, loginTypes } from "../types/authTypes";
 import { api } from "./app";
 
 export const register = async (data: createAccountTypes) => {
@@ -13,11 +9,6 @@ export const register = async (data: createAccountTypes) => {
 export const login = async (data: loginTypes) => {
   const response = await api.post("/auth/login", data);
   return response.data;
-};
-
-export const getCurrentUser = async (): Promise<SignInResponse> => {
-  const response = await api.get("/auth/getUser");
-  return response.data.data;
 };
 
 export const logout = async () => {

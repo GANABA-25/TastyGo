@@ -1,5 +1,5 @@
-import { AxiosError } from "axios";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import {
   createContext,
   useCallback,
@@ -10,14 +10,16 @@ import {
   type ReactNode,
 } from "react";
 
-import { user } from "../types/authTypes";
-import { logout as logoutRequest } from "../util/https";
+import { SignInResponse, user } from "../types/authTypes";
+
+const ACCESS_TOKEN_KEY = "accessToken";
+const USER_DATA_KEY = "userData";
 
 type AuthContextTypes = {
   userData: user | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  authenticate: (user: user) => void;
+  authenticate: (response: SignInResponse) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -36,14 +38,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        // const user = await getCurrentUser();
-        // setUserData(user);
-      } catch (error) {
-        const axiosError = error as AxiosError;
+        const token = await SecureStore.getItemAsync("accessToken");
+        const storedUser = await SecureStore.getItemAsync("userData");
 
-        if (axiosError.response?.status !== 401) {
-          console.error("Failed to load user:", error);
+        if (token && storedUser) {
+          const parsedUser: user = JSON.parse(storedUser);
+
+          setUserData(parsedUser);
+        } else {
+          setUserData(null);
         }
+      } catch (error) {
+        console.error("Failed to restore authentication:", error);
+
+        await SecureStore.deleteItemAsync("accessToken");
+        await SecureStore.deleteItemAsync("userData");
 
         setUserData(null);
       } finally {
@@ -54,15 +63,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loadUser();
   }, []);
 
-  const authenticate = useCallback((user: user) => {
-    setUserData(user);
+  const authenticate = useCallback(async (response: SignInResponse) => {
+    await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, response.token);
+
+    await SecureStore.setItemAsync(
+      USER_DATA_KEY,
+      JSON.stringify(response.user),
+    );
+
+    setUserData(response.user);
   }, []);
 
   const logout = useCallback(async () => {
     try {
-      await logoutRequest();
+      await Promise.all([
+        SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY),
+        SecureStore.deleteItemAsync(USER_DATA_KEY),
+      ]);
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Failed to clear stored authentication:", error);
     } finally {
       setUserData(null);
       router.replace("/login");
