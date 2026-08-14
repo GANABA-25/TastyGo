@@ -3,6 +3,8 @@ import type { Request, Response } from "express";
 import prisma from "../../lib/prisma.ts";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../../services/email.services.ts";
+import { welcomeEmailTemplate } from "../../templates/welcomeEmail.ts";
 
 const register = async (req: Request, res: Response) => {
   try {
@@ -22,7 +24,7 @@ const register = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
         fullName,
         email,
@@ -30,13 +32,14 @@ const register = async (req: Request, res: Response) => {
       },
     });
 
+    await sendEmail({
+      to: email,
+      subject: "Welcome",
+      html: welcomeEmailTemplate(fullName),
+    });
+
     return res.status(201).json({
       message: "Account created.",
-      user: {
-        id: user.id,
-        fullName: user.fullName,
-        email: user.email,
-      },
     });
   } catch (error) {
     console.error("Registration error:", error);

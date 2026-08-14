@@ -1,3 +1,4 @@
+import { AxiosError } from "axios";
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -18,6 +19,12 @@ import { loginTypes } from "@/src/types/authTypes";
 import { login } from "@/src/util/https";
 import { validateLoginInData } from "@/src/util/validation";
 import { useMutation } from "@tanstack/react-query";
+import Toast from "react-native-toast-message";
+
+type RegisterErrorResponse = {
+  message: string;
+  errors?: Partial<Record<keyof loginTypes, string>>;
+};
 
 export default function LoginScreen() {
   const [serverErrors, setServerErrors] = useState<
@@ -34,15 +41,28 @@ export default function LoginScreen() {
     password: false,
   });
 
-  const { mutate, isError, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: login,
 
     onSuccess: (data) => {
-      console.log(data);
+      router.replace("/home");
     },
 
     onError: (error) => {
-      console.log(error);
+      const axiosError = error as AxiosError<RegisterErrorResponse>;
+
+      const responseData = axiosError.response?.data;
+
+      if (responseData?.errors) {
+        setServerErrors(responseData.errors);
+      }
+
+      Toast.show({
+        type: "error",
+        text1: responseData?.message || "Something went wrong",
+      });
+
+      console.log("Backend error:", responseData);
     },
   });
 
@@ -94,8 +114,6 @@ export default function LoginScreen() {
     if (Object.values(errors).some((error) => error !== "")) {
       return;
     }
-
-    console.log(loginData);
 
     mutate(loginData);
   };
@@ -149,7 +167,7 @@ export default function LoginScreen() {
           Forget Password?
         </Text>
 
-        <Button onPress={loginHandler} label="Sign in" />
+        <Button onPress={loginHandler} label="Sign in" isLoading={isPending} />
 
         <View className="flex-row justify-center items-center gap-4">
           <View className="bg-gray-200 w-1/4 h-1" />

@@ -1,5 +1,6 @@
 import { register } from "@/src/util/https";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -10,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import Button from "@/src/components/button";
 import Input from "@/src/components/Input";
@@ -19,6 +21,11 @@ import { createAccountTypes } from "@/src/types/authTypes";
 import { validateRegisterData } from "@/src/util/validation";
 
 import { Lock, Mail, UserRound } from "lucide-react-native";
+
+type RegisterErrorResponse = {
+  message: string;
+  errors?: Partial<Record<keyof createAccountTypes, string>>;
+};
 
 export default function RegisterScreen() {
   const [serverErrors, setServerErrors] = useState<
@@ -41,15 +48,33 @@ export default function RegisterScreen() {
     confirmPassword: false,
   });
 
-  const { mutate, isError, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: register,
 
     onSuccess: (data) => {
-      console.log(data);
+      Toast.show({
+        type: "success",
+        text1: data.message,
+      });
+
+      router.push("/login");
     },
 
     onError: (error) => {
-      console.log(error);
+      const axiosError = error as AxiosError<RegisterErrorResponse>;
+
+      const responseData = axiosError.response?.data;
+
+      if (responseData?.errors) {
+        setServerErrors(responseData.errors);
+      }
+
+      Toast.show({
+        type: "error",
+        text1: responseData?.message || "Something went wrong",
+      });
+
+      console.log("Backend error:", responseData);
     },
   });
 
@@ -103,8 +128,6 @@ export default function RegisterScreen() {
     if (Object.values(errors).some((error) => error !== "")) {
       return;
     }
-
-    console.log(registerData);
 
     mutate(registerData);
   };
@@ -171,7 +194,7 @@ export default function RegisterScreen() {
           <Input
             label="Confirm Password"
             icon={Lock}
-            error={getFieldError("password")}
+            error={getFieldError("confirmPassword")}
             TextInputConfig={{
               autoCorrect: false,
               placeholder: "confirm Password",
@@ -187,7 +210,11 @@ export default function RegisterScreen() {
           Forget Password?
         </Text>
 
-        <Button label="Create Account" onPress={RegisterHandler} />
+        <Button
+          label="Create Account"
+          onPress={RegisterHandler}
+          isLoading={isPending}
+        />
 
         <View className="flex-row justify-center items-center gap-4">
           <View className="bg-gray-200 w-1/4 h-1" />
