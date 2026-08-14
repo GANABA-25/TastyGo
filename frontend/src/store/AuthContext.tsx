@@ -10,14 +10,14 @@ import {
   type ReactNode,
 } from "react";
 
-import { SignInResponse } from "../types/authTypes";
+import { user } from "../types/authTypes";
 import { logout as logoutRequest } from "../util/https";
 
 type AuthContextTypes = {
-  userData: SignInResponse | null;
+  userData: user | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  authenticate: (user: SignInResponse) => void;
+  authenticate: (user: user) => void;
   logout: () => Promise<void>;
 };
 
@@ -30,7 +30,7 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter();
 
-  const [userData, setUserData] = useState<SignInResponse | null>(null);
+  const [userData, setUserData] = useState<user | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loadUser();
   }, []);
 
-  const authenticate = useCallback((user: SignInResponse) => {
+  const authenticate = useCallback((user: user) => {
     setUserData(user);
   }, []);
 
