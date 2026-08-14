@@ -1,3 +1,4 @@
+import { useAuth } from "@/src/store/AuthContext";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import {
@@ -27,6 +28,7 @@ type RegisterErrorResponse = {
 };
 
 export default function LoginScreen() {
+  const { authenticate } = useAuth();
   const [serverErrors, setServerErrors] = useState<
     Partial<Record<keyof loginTypes, string>>
   >({});
@@ -45,6 +47,7 @@ export default function LoginScreen() {
     mutationFn: login,
 
     onSuccess: (data) => {
+      authenticate(data);
       router.replace("/home");
     },
 

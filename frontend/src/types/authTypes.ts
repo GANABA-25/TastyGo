@@ -9,3 +9,13 @@ export type loginTypes = {
   email: string;
   password: string;
 };
+
+export type SignInResponse = {
+  message: "Sign in successful.";
+  token: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+};
