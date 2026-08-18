@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   registerValidator,
   logInValidator,
+  verifyOtpValidator,
 } from "../../validator/authValidator.ts";
 import { validateRequest } from "../../middleware/vlidateRequest.ts";
 import authController from "./auth.controller.ts";
@@ -16,5 +17,14 @@ router.post(
 );
 
 router.post("/login", logInValidator, validateRequest, authController.login);
+
+router.post("/resetPasswordEmail", authController.resetPasswordEmail);
+
+router.post(
+  "/password-reset/verify-otp",
+  verifyOtpValidator,
+  validateRequest,
+  authController.verifyOtp,
+);
 
 export default router;

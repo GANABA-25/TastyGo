@@ -1,4 +1,9 @@
-import { createAccountTypes, loginTypes } from "../types/authTypes";
+import {
+  createAccountTypes,
+  loginTypes,
+  otpTypes,
+  ResetPasswordEmailType,
+} from "../types/authTypes";
 import { api } from "./app";
 
 export const register = async (data: createAccountTypes) => {
@@ -13,5 +18,15 @@ export const login = async (data: loginTypes) => {
 
 export const logout = async () => {
   const response = await api.post("/auth/logOut");
+  return response.data;
+};
+
+export const resetPasswordEmail = async (data: ResetPasswordEmailType) => {
+  const response = await api.post("/auth/resetPasswordEmail", data);
+  return response.data;
+};
+
+export const verifyOtp = async (data: otpTypes) => {
+  const response = await api.post("/auth/password-reset/verify-otp", data);
   return response.data;
 };

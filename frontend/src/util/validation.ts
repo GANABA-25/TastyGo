@@ -1,7 +1,13 @@
-import { createAccountTypes, loginTypes } from "../types/authTypes";
+import {
+  createAccountTypes,
+  loginTypes,
+  otpTypes,
+  ResetPasswordEmailType,
+} from "../types/authTypes";
 
 export const validateRegisterData = (registerData: createAccountTypes) => {
-  const { fullName, email, password, confirmPassword } = registerData;
+  const { fullName, email, phoneNumber, password, confirmPassword } =
+    registerData;
 
   const errors = {
     fullName: !fullName.trim() ? "Full name is required" : "",
@@ -23,6 +29,15 @@ export const validateRegisterData = (registerData: createAccountTypes) => {
               : !/[\W_]/.test(password)
                 ? "Password must contain at least one special character"
                 : "",
+
+    phoneNumber: !phoneNumber.trim()
+      ? "Phone number is required"
+      : !/^\d+$/.test(phoneNumber.replace(/\s/g, ""))
+        ? "Phone number must contain only numbers"
+        : phoneNumber.replace(/\s/g, "").length !== 10
+          ? "Phone number must be exactly 10 digits"
+          : "",
+
     confirmPassword: !confirmPassword.trim()
       ? "Confirm password is required"
       : confirmPassword !== password
@@ -44,6 +59,38 @@ export const validateLoginInData = (signInData: loginTypes) => {
         : "",
 
     password: !password.trim() ? "Password is required" : "",
+  };
+
+  return errors;
+};
+
+export const validateResetPasswordEmail = (
+  resetPasswordEmail: ResetPasswordEmailType,
+) => {
+  const { email } = resetPasswordEmail;
+
+  const errors = {
+    email: !email.trim()
+      ? "A valid email is required"
+      : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+        ? "Incorrect email format"
+        : "",
+  };
+
+  return errors;
+};
+
+export const validateOtp = (otpData: otpTypes) => {
+  const { otp } = otpData;
+
+  const errors = {
+    otp: !otp.trim()
+      ? "Verification code is required"
+      : !/^\d+$/.test(otp)
+        ? "Verification code must contain only numbers"
+        : otp.length !== 6
+          ? "Verification code must be exactly 6 digits"
+          : "",
   };
 
   return errors;

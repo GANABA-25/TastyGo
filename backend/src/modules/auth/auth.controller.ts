@@ -5,10 +5,14 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../../services/email.services.ts";
 import { welcomeEmailTemplate } from "../../templates/welcomeEmail.ts";
+import {
+  generatePhoneOtp,
+  verifyPhoneOtp,
+} from "../../services/arkesel.service.ts";
 
 const register = async (req: Request, res: Response) => {
   try {
-    const { fullName, email, password } = req.body;
+    const { fullName, email, phoneNumber, password } = req.body;
 
     const existingUser = await prisma.user.findUnique({
       where: {
@@ -24,10 +28,15 @@ const register = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    const normalizedPhoneNumber = phoneNumber
+      .replace(/\D/g, "")
+      .replace(/^0/, "+233");
+
     await prisma.user.create({
       data: {
         fullName,
         email,
+        phoneNumber: normalizedPhoneNumber,
         password: hashedPassword,
       },
     });
@@ -104,7 +113,142 @@ const login = async (req: Request, res: Response) => {
   }
 };
 
+const resetPasswordEmail = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return res.status(200).json({
+        message:
+          "If an account exists with this email, a verification code has been sent.",
+      });
+    }
+
+    await prisma.passwordResetRequest.updateMany({
+      where: {
+        userId: user.id,
+        otpVerified: false,
+        usedAt: null,
+      },
+      data: {
+        expiresAt: new Date(),
+      },
+    });
+
+    const resetRequest = await prisma.passwordResetRequest.create({
+      data: {
+        userId: user.id,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    });
+
+    const otpResponse = await generatePhoneOtp(user.phoneNumber);
+
+    if (otpResponse.code !== "1000") {
+      await prisma.passwordResetRequest.delete({
+        where: {
+          id: resetRequest.id,
+        },
+      });
+
+      return res.status(500).json({
+        message:
+          "We couldn't send the verification code. Please try again later.",
+      });
+    }
+
+    return res.status(200).json({
+      message:
+        "If an account exists with this email, a verification code has been sent.",
+      resetData: {
+        email: user.email,
+        resetRequestId: resetRequest.id,
+      },
+    });
+  } catch (error) {
+    console.error("Password reset request error:", error);
+
+    return res.status(500).json({
+      message:
+        "An error occurred while processing your request. Please try again later.",
+    });
+  }
+};
+
+export const verifyOtp = async (req: Request, res: Response) => {
+  try {
+    const { otp, resetRequestId } = req.body;
+
+    console.log(req.body);
+
+    const resetRequest = await prisma.passwordResetRequest.findUnique({
+      where: {
+        id: resetRequestId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!resetRequest) {
+      return res.status(400).json({
+        message: "Invalid or expired password reset request.",
+      });
+    }
+
+    if (resetRequest.expiresAt < new Date()) {
+      return res.status(400).json({
+        message:
+          "This verification code has expired. Please request a new one.",
+      });
+    }
+
+    if (resetRequest.otpVerified) {
+      return res.status(400).json({
+        message: "This verification code has already been verified.",
+      });
+    }
+
+    const result = await verifyPhoneOtp(otp, resetRequest.user.phoneNumber);
+
+    if (result.code !== "1000") {
+      return res.status(400).json({
+        message: "Invalid verification code. Please try again.",
+      });
+    }
+
+    await prisma.passwordResetRequest.update({
+      where: {
+        id: resetRequest.id,
+      },
+      data: {
+        otpVerified: true,
+      },
+    });
+
+    return res.status(200).json({
+      message: "OTP verified successfully.",
+      resetRequestId: resetRequest.id,
+    });
+  } catch (error) {
+    console.error("OTP verification error:", error);
+
+    return res.status(500).json({
+      message:
+        "An error occurred while verifying the OTP. Please try again later.",
+    });
+  }
+};
+
 export default {
   register,
   login,
+  resetPasswordEmail,
+  verifyOtp,
 };

@@ -11,11 +11,13 @@ import {
   Pencil,
   TicketPercent,
 } from "lucide-react-native";
+import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
   const { userData, logout } = useAuth();
+  const [pressed, setPressed] = useState(false);
 
   return (
     <SafeAreaView className="flex-1 bg-primary-light" edges={["top"]}>
@@ -98,7 +100,11 @@ export default function ProfileScreen() {
 
             <Pressable
               onPress={logout}
-              className="flex-row bg-white border border-gray-100 rounded-full justify-center items-center gap-4 elevation-sm p-4"
+              onPressIn={() => setPressed(true)}
+              onPressOut={() => setPressed(false)}
+              className={`flex-row bg-white border border-gray-100 rounded-full justify-center items-center gap-4 elevation-sm p-4 ${
+                pressed ? "scale-95 opacity-60" : "scale-100 opacity-100"
+              }`}
             >
               <LogOut size={20} color="red" />
               <Text className="font-inter-bold text-red-600">Log out</Text>

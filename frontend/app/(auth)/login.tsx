@@ -166,9 +166,11 @@ export default function LoginScreen() {
           }}
         />
 
-        <Text className="text-right font-inter-bold text-primary">
-          Forget Password?
-        </Text>
+        <Pressable onPress={() => router.push("/reset-password-email")}>
+          <Text className="text-right font-inter-bold text-primary">
+            Forget Password?
+          </Text>
+        </Pressable>
 
         <Button onPress={loginHandler} label="Sign in" isLoading={isPending} />
 

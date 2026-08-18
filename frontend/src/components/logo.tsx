@@ -6,7 +6,7 @@ const Logo = () => {
       <View className="bg-primary p-2 rounded-full w-10 h-10 justify-center items-center">
         <Text className="text-white font-bold">Q</Text>
       </View>
-      <Text className="font-inter-bold">QuickBite</Text>
+      <Text className="font-inter-bold">TastyGo</Text>
     </View>
   );
 };

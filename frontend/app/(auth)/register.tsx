@@ -1,3 +1,4 @@
+import { formatPhoneNumber } from "@/src/util/formatPhoneNumber";
 import { register } from "@/src/util/https";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -20,7 +21,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { createAccountTypes } from "@/src/types/authTypes";
 import { validateRegisterData } from "@/src/util/validation";
 
-import { Lock, Mail, UserRound } from "lucide-react-native";
+import { Lock, Mail, Phone, UserRound } from "lucide-react-native";
 
 type RegisterErrorResponse = {
   message: string;
@@ -35,6 +36,7 @@ export default function RegisterScreen() {
   const [registerData, setRegisterData] = useState<createAccountTypes>({
     fullName: "",
     email: "",
+    phoneNumber: "",
     password: "",
     confirmPassword: "",
   });
@@ -44,6 +46,7 @@ export default function RegisterScreen() {
   >({
     fullName: false,
     email: false,
+    phoneNumber: false,
     password: false,
     confirmPassword: false,
   });
@@ -119,6 +122,7 @@ export default function RegisterScreen() {
     setDidEdit({
       fullName: true,
       email: true,
+      phoneNumber: true,
       password: true,
       confirmPassword: true,
     });
@@ -134,11 +138,11 @@ export default function RegisterScreen() {
   return (
     <SafeAreaView className="flex-1">
       <KeyboardAvoidingView
-        className="flex-1 justify-center gap-4 px-8"
+        className="flex-1 justify-center gap-3 px-8"
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={20}
       >
-        <View className="flex-col gap-4 justify-center items-center">
+        <View className="flex-col gap-2 justify-center items-center">
           <Text className="text-3xl font-inter-bold">Create your account</Text>
           <Text className="text-sm font-inter">
             Two minutes to your first delivery.
@@ -179,6 +183,21 @@ export default function RegisterScreen() {
           />
 
           <Input
+            label="Phone Number"
+            icon={Phone}
+            error={getFieldError("phoneNumber")}
+            TextInputConfig={{
+              autoCorrect: false,
+              keyboardType: "number-pad",
+              placeholder: "059 649 800 6",
+              onChangeText: (text) =>
+                inputChangeHandler("phoneNumber", formatPhoneNumber(text)),
+              onBlur: () => inputBlurHandler("phoneNumber"),
+              value: registerData.phoneNumber,
+            }}
+          />
+
+          <Input
             label="Password"
             icon={Lock}
             error={getFieldError("password")}
@@ -205,10 +224,6 @@ export default function RegisterScreen() {
             }}
           />
         </View>
-
-        <Text className="text-right font-inter-bold text-primary">
-          Forget Password?
-        </Text>
 
         <Button
           label="Create Account"

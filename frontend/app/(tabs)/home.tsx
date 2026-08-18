@@ -1,4 +1,5 @@
 import FoodCard from "@/src/components/foodCard";
+import Input from "@/src/components/Input";
 import RestaurantsCard from "@/src/components/restaurantsCard";
 import { categories, restaurants } from "@/src/data/dummyData";
 import { LinearGradient } from "expo-linear-gradient";
@@ -9,10 +10,21 @@ import {
   Search,
   SlidersHorizontal,
 } from "lucide-react-native";
-import { FlatList, Pressable, Text, TextInput, View } from "react-native";
+import { useState } from "react";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const [pressedCategory, setPressedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const filteredRestaurants =
+    selectedCategory === "All"
+      ? restaurants
+      : restaurants.filter((restaurant) =>
+          restaurant.tags.includes(selectedCategory),
+        );
+
   return (
     <SafeAreaView className="flex-1 bg-primary-light" edges={["top"]}>
       <View className="flex-1 bg-white">
@@ -42,13 +54,13 @@ export default function HomeScreen() {
           </View>
 
           <View className="flex-row items-center gap-3 mt-8">
-            <View className="h-12 flex-1 flex-row items-center rounded-full bg-white px-4 elevation-sm">
-              <Search size={20} color="#9CA3AF" strokeWidth={2} />
-
-              <TextInput
-                className="ml-3 flex-1 font-inter text-base text-gray-900"
-                placeholder="Search dishes, restaurants..."
-                placeholderTextColor="#9CA3AF"
+            <View className="flex-1">
+              <Input
+                icon={Search}
+                TextInputConfig={{
+                  autoCorrect: false,
+                  placeholder: "Search dishes, restaurants...",
+                }}
               />
             </View>
 
@@ -59,7 +71,7 @@ export default function HomeScreen() {
         </View>
 
         <FlatList
-          data={restaurants}
+          data={filteredRestaurants}
           keyExtractor={(item) => String(item.id)}
           showsVerticalScrollIndicator={false}
           contentContainerClassName="gap-4 px-4 pb-8 pt-4"
@@ -72,10 +84,29 @@ export default function HomeScreen() {
                 keyExtractor={(item) => String(item.id)}
                 contentContainerClassName="flex-row gap-3 py-2"
                 renderItem={({ item }) => (
-                  <Pressable className="flex-row h-11 items-center justify-center rounded-full border border-gray-200 bg-white px-5 elevation-sm">
+                  <Pressable
+                    onPress={() => setSelectedCategory(item.label)}
+                    onPressIn={() => setPressedCategory(item.label)}
+                    onPressOut={() => setPressedCategory(null)}
+                    className={`flex-row h-11 items-center justify-center rounded-full border border-gray-200 px-5 elevation-sm ${
+                      item.label === selectedCategory
+                        ? "bg-primary"
+                        : "bg-white"
+                    } ${
+                      pressedCategory === item.label
+                        ? "scale-95 opacity-60"
+                        : "scale-100 opacity-100"
+                    }`}
+                  >
                     <Text>{item.emoji}</Text>
 
-                    <Text className="ml-2 font-inter-bold text-gray-800">
+                    <Text
+                      className={`ml-2 font-inter-bold ${
+                        item.label === selectedCategory
+                          ? "text-white"
+                          : "text-gray-800"
+                      }`}
+                    >
                       {item.label}
                     </Text>
                   </Pressable>

@@ -11,6 +11,25 @@ export const registerValidator = [
     .isEmail()
     .withMessage("Incorrect email format"),
 
+  body("phoneNumber")
+    .trim()
+    .notEmpty()
+    .withMessage("Phone number is required")
+    .bail()
+    .custom((value) => {
+      const phoneNumber = value.replace(/\s/g, "");
+
+      if (!/^\d{10}$/.test(phoneNumber)) {
+        throw new Error("Phone number must be exactly 10 digits");
+      }
+
+      if (!phoneNumber.startsWith("0")) {
+        throw new Error("Phone number must start with 0");
+      }
+
+      return true;
+    }),
+
   body("password")
     .trim()
     .notEmpty()
@@ -54,4 +73,15 @@ export const logInValidator = [
     .withMessage("Incorrect email format"),
 
   body("password").trim().notEmpty().withMessage("Password is required"),
+];
+
+export const verifyOtpValidator = [
+  body("otp")
+    .trim()
+    .notEmpty()
+    .withMessage("OTP is required")
+    .isLength({ min: 6, max: 6 })
+    .withMessage("OTP must be 6 digits")
+    .isNumeric()
+    .withMessage("OTP must contain only numbers"),
 ];
