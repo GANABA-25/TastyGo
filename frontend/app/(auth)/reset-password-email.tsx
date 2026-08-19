@@ -8,7 +8,13 @@ import { AxiosError } from "axios";
 import { router } from "expo-router";
 import { Mail } from "lucide-react-native";
 import { useState } from "react";
-import { Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
@@ -114,40 +120,54 @@ const ResetPasswordEmail = () => {
     mutate(formData);
   };
   return (
-    <SafeAreaView className="flex-1 mt-32 px-4">
-      <View className="w-full items-center gap-4">
-        <Text className="text-center font-inter-bold text-3xl">
-          Enter Email
-        </Text>
+    <SafeAreaView className="flex-1">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={20}
+      >
+        <ScrollView
+          contentContainerClassName="flex-grow justify-center gap-4 px-4"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="w-full items-center gap-4">
+            <Text className="text-center font-inter-bold text-3xl">
+              Enter Email
+            </Text>
 
-        <Text className="max-w-[350px] text-center font-inter">
-          Confirm your account email and we'll text you a one-time code to your
-          phone number.
-        </Text>
-      </View>
+            <Text className="max-w-[350px] text-center font-inter">
+              Confirm your account email and we'll text you a one-time code to
+              your phone number.
+            </Text>
+          </View>
 
-      <View className="w-full max-w-[400px] gap-4">
-        <Input
-          label="Email"
-          icon={Mail}
-          error={getFieldError("email")}
-          TextInputConfig={{
-            autoCorrect: false,
-            keyboardType: "email-address",
-            autoCapitalize: "none",
-            placeholder: "Email address",
-            onChangeText: (text) => inputChangeHandler("email", text),
-            onBlur: () => inputBlurHandler("email"),
-            value: formData.email,
-          }}
-        />
+          <View className="w-full max-w-[400px] gap-4">
+            <Input
+              label="Email"
+              icon={Mail}
+              error={getFieldError("email")}
+              TextInputConfig={{
+                autoCorrect: false,
+                keyboardType: "email-address",
+                autoCapitalize: "none",
+                placeholder: "Email address",
+                onChangeText: (text) => inputChangeHandler("email", text),
+                onBlur: () => inputBlurHandler("email"),
+                value: formData.email,
+              }}
+            />
 
-        <Button onPress={handleSubmit} label="Continue" isLoading={isPending} />
-      </View>
+            <Button
+              onPress={handleSubmit}
+              label="Continue"
+              isLoading={isPending}
+            />
+          </View>
 
-      <Text className="mt-6 text-center font-inter">
-        Remembered it? Sign in
-      </Text>
+          <Text className="text-center font-inter">Remembered it? Sign in</Text>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

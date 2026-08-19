@@ -9,7 +9,10 @@ import { AxiosError } from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
 import {
+  KeyboardAvoidingView,
   NativeSyntheticEvent,
+  Platform,
+  ScrollView,
   Text,
   TextInput,
   TextInputKeyPressEventData,
@@ -228,86 +231,100 @@ const OtpVerification = () => {
   const otpError = getFieldError("otp");
 
   return (
-    <SafeAreaView className="mt-32 flex-1 gap-4 px-4">
-      <View className="w-full items-center gap-4">
-        <Text className="text-center font-inter-bold text-3xl">
-          Enter the code
-        </Text>
-
-        <Text className="max-w-[350px] text-center font-inter">
-          We sent a 6-digit code to your phone number.
-        </Text>
-      </View>
-
-      <View className="items-center gap-4">
-        <View className="flex-row justify-center gap-3">
-          {otpDigits.map((digit, index) => {
-            const borderColor = otpError
-              ? "border-red-600"
-              : focusedIndex === index
-                ? "border-primary"
-                : "border-gray-300";
-
-            return (
-              <TextInput
-                key={index}
-                ref={(ref) => {
-                  inputRefs.current[index] = ref;
-                }}
-                value={digit}
-                onChangeText={(value) => handleOtpChange(value, index)}
-                onKeyPress={(event) => handleKeyPress(event, index)}
-                onFocus={() => setFocusedIndex(index)}
-                onBlur={handleOtpBlur}
-                keyboardType="number-pad"
-                maxLength={1}
-                selectTextOnFocus
-                textAlign="center"
-                className={`h-14 w-12 rounded-xl border ${borderColor} font-inter-bold text-xl`}
-              />
-            );
-          })}
-        </View>
-
-        <FormError message={otpError} />
-      </View>
-
-      <Button onPress={handleSubmit} label="Verify" isLoading={isPending} />
-
-      <View className="items-center">
-        <Text className="font-inter text-gray-500">
-          Didn't receive the code?{" "}
-          {!isExpired ? (
-            <Text className="font-inter-bold text-gray-400">
-              Resend in {formattedTime}
+    <SafeAreaView className="flex-1">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={20}
+      >
+        <ScrollView
+          contentContainerClassName="flex-grow justify-center gap-4 px-4"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="w-full items-center gap-4">
+            <Text className="text-center font-inter-bold text-3xl">
+              Enter the code
             </Text>
-          ) : isResending ? (
-            <Text className="font-inter-bold text-gray-400">Sending...</Text>
-          ) : (
-            <Text
-              onPress={handleResendOtp}
-              className="font-inter-bold text-primary"
-            >
-              Resend OTP
-            </Text>
-          )}
-        </Text>
-      </View>
 
-      <View className="items-center gap-2">
-        {!isExpired ? (
-          <Text className="font-inter text-gray-500">
-            Code expires in{" "}
-            <Text className="font-inter-bold text-primary">
-              {formattedTime}
+            <Text className="max-w-[350px] text-center font-inter">
+              We sent a 6-digit code to your phone number.
             </Text>
-          </Text>
-        ) : (
-          <Text className="font-inter-bold text-red-600">
-            Your verification code has expired.
-          </Text>
-        )}
-      </View>
+          </View>
+
+          <View className="items-center gap-4">
+            <View className="flex-row justify-center gap-3">
+              {otpDigits.map((digit, index) => {
+                const borderColor = otpError
+                  ? "border-red-600"
+                  : focusedIndex === index
+                    ? "border-primary"
+                    : "border-gray-300";
+
+                return (
+                  <TextInput
+                    key={index}
+                    ref={(ref) => {
+                      inputRefs.current[index] = ref;
+                    }}
+                    value={digit}
+                    onChangeText={(value) => handleOtpChange(value, index)}
+                    onKeyPress={(event) => handleKeyPress(event, index)}
+                    onFocus={() => setFocusedIndex(index)}
+                    onBlur={handleOtpBlur}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                    selectTextOnFocus
+                    textAlign="center"
+                    className={`h-14 w-12 rounded-xl border ${borderColor} font-inter-bold text-xl`}
+                  />
+                );
+              })}
+            </View>
+
+            <FormError message={otpError} />
+          </View>
+
+          <Button onPress={handleSubmit} label="Verify" isLoading={isPending} />
+
+          <View className="items-center">
+            <Text className="font-inter text-gray-500">
+              Didn't receive the code?{" "}
+              {!isExpired ? (
+                <Text className="font-inter-bold text-gray-400">
+                  Resend in {formattedTime}
+                </Text>
+              ) : isResending ? (
+                <Text className="font-inter-bold text-gray-400">
+                  Sending...
+                </Text>
+              ) : (
+                <Text
+                  onPress={handleResendOtp}
+                  className="font-inter-bold text-primary"
+                >
+                  Resend OTP
+                </Text>
+              )}
+            </Text>
+          </View>
+
+          <View className="items-center gap-2">
+            {!isExpired ? (
+              <Text className="font-inter text-gray-500">
+                Code expires in{" "}
+                <Text className="font-inter-bold text-primary">
+                  {formattedTime}
+                </Text>
+              </Text>
+            ) : (
+              <Text className="font-inter-bold text-red-600">
+                Your verification code has expired.
+              </Text>
+            )}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
