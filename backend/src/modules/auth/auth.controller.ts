@@ -185,8 +185,6 @@ export const verifyOtp = async (req: Request, res: Response) => {
   try {
     const { otp, resetRequestId } = req.body;
 
-    console.log(req.body);
-
     const resetRequest = await prisma.passwordResetRequest.findUnique({
       where: {
         id: resetRequestId,
@@ -217,9 +215,17 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
     const result = await verifyPhoneOtp(otp, resetRequest.user.phoneNumber);
 
-    if (result.code !== "1000") {
+    console.log(result);
+
+    if (result.code === "1101") {
       return res.status(400).json({
-        message: "Invalid verification code. Please try again.",
+        message: "The code field is required.",
+      });
+    }
+
+    if (result.code === "1106") {
+      return res.status(400).json({
+        message: "The code field is required.",
       });
     }
 

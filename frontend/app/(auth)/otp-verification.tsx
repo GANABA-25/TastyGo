@@ -6,7 +6,7 @@ import { resetPasswordEmail, verifyOtp } from "@/src/util/https";
 import { validateOtp } from "@/src/util/validation";
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
 import {
   NativeSyntheticEvent,
@@ -63,7 +63,7 @@ const OtpVerification = () => {
 
     onSuccess: (data) => {
       console.log("OTP verification successful:", data);
-      // router.replace("/reset-password");
+      router.replace("/reset-password");
     },
 
     onError: (error) => {
