@@ -199,6 +199,7 @@ export default function RegisterScreen() {
 
           <Input
             label="Password"
+            type="password"
             icon={Lock}
             error={getFieldError("password")}
             TextInputConfig={{
@@ -212,6 +213,7 @@ export default function RegisterScreen() {
 
           <Input
             label="Confirm Password"
+            type="password"
             icon={Lock}
             error={getFieldError("confirmPassword")}
             TextInputConfig={{

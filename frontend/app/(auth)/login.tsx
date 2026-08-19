@@ -155,6 +155,7 @@ export default function LoginScreen() {
 
         <Input
           label="Password"
+          type="password"
           icon={Lock}
           error={getFieldError("password")}
           TextInputConfig={{

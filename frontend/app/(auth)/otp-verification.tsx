@@ -62,25 +62,24 @@ const OtpVerification = () => {
     mutationFn: verifyOtp,
 
     onSuccess: (data) => {
-      console.log("OTP verification successful:", data);
-      router.replace("/reset-password");
+      router.push({
+        pathname: "/reset-password",
+        params: {
+          resetRequestId: data.resetRequestId,
+        },
+      });
     },
 
     onError: (error) => {
       const axiosError = error as AxiosError<VerifyOtpResponse>;
-
       const responseData = axiosError.response?.data;
-
       if (responseData?.errors) {
         setServerErrors(responseData.errors);
       }
-
       Toast.show({
         type: "error",
         text1: responseData?.message || "Something went wrong",
       });
-
-      console.log("OTP verification error:", responseData);
     },
   });
 

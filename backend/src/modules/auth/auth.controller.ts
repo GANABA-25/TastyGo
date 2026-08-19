@@ -215,8 +215,6 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
     const result = await verifyPhoneOtp(otp, resetRequest.user.phoneNumber);
 
-    console.log(result);
-
     if (result.code === "1101") {
       return res.status(400).json({
         message: "The code field is required.",
@@ -225,7 +223,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
     if (result.code === "1106") {
       return res.status(400).json({
-        message: "The code field is required.",
+        message: "Internal error",
       });
     }
 
@@ -252,9 +250,77 @@ export const verifyOtp = async (req: Request, res: Response) => {
   }
 };
 
+export const passwordReset = async (req: Request, res: Response) => {
+  try {
+    const { password, resetRequestId } = req.body;
+
+    const resetRequest = await prisma.passwordResetRequest.findUnique({
+      where: {
+        id: resetRequestId,
+      },
+    });
+
+    if (!resetRequest) {
+      return res.status(400).json({
+        message: "Invalid password reset request.",
+      });
+    }
+
+    if (resetRequest.expiresAt < new Date()) {
+      return res.status(400).json({
+        message:
+          "This password reset request has expired. Please request a new code.",
+      });
+    }
+
+    if (!resetRequest.otpVerified) {
+      return res.status(403).json({
+        message: "Please verify the OTP before resetting your password.",
+      });
+    }
+
+    if (resetRequest.usedAt) {
+      return res.status(400).json({
+        message: "This password reset request has already been used.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    await prisma.user.update({
+      where: {
+        id: resetRequest.userId,
+      },
+      data: {
+        password: hashedPassword,
+      },
+    });
+
+    await prisma.passwordResetRequest.update({
+      where: {
+        id: resetRequest.id,
+      },
+      data: {
+        usedAt: new Date(),
+      },
+    });
+
+    return res.status(200).json({
+      message: "Password reset successfully. You can now sign in.",
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    return res.status(500).json({
+      message:
+        "An error occurred while processing your request. Please try again later.",
+    });
+  }
+};
+
 export default {
   register,
   login,
   resetPasswordEmail,
   verifyOtp,
+  passwordReset,
 };

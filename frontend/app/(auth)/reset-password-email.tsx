@@ -142,12 +142,7 @@ const ResetPasswordEmail = () => {
           }}
         />
 
-        <Button
-          onPress={handleSubmit}
-          // onPress={() => router.push("/otp-verification")}
-          label="Continue"
-          isLoading={isPending}
-        />
+        <Button onPress={handleSubmit} label="Continue" isLoading={isPending} />
       </View>
 
       <Text className="mt-6 text-center font-inter">

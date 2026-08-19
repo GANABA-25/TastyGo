@@ -36,3 +36,14 @@ export type otpTypes = {
 export type OtpVerificationData = {
   otp: string;
 };
+
+export type resetPasswordData = {
+  password: string;
+  confirmPassword: string;
+};
+
+export type ResetPasswordRequest = {
+  password: string;
+  confirmPassword: string;
+  resetRequestId: string;
+};

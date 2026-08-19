@@ -3,6 +3,7 @@ import {
   loginTypes,
   otpTypes,
   ResetPasswordEmailType,
+  ResetPasswordRequest,
 } from "../types/authTypes";
 import { api } from "./app";
 
@@ -22,11 +23,16 @@ export const logout = async () => {
 };
 
 export const resetPasswordEmail = async (data: ResetPasswordEmailType) => {
-  const response = await api.post("/auth/resetPasswordEmail", data);
+  const response = await api.post("/auth/password-reset/verify-email", data);
   return response.data;
 };
 
 export const verifyOtp = async (data: otpTypes) => {
   const response = await api.post("/auth/password-reset/verify-otp", data);
+  return response.data;
+};
+
+export const resetPassword = async (data: ResetPasswordRequest) => {
+  const response = await api.post("/auth/password-reset", data);
   return response.data;
 };

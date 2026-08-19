@@ -2,6 +2,7 @@ import {
   createAccountTypes,
   loginTypes,
   otpTypes,
+  resetPasswordData,
   ResetPasswordEmailType,
 } from "../types/authTypes";
 
@@ -91,6 +92,36 @@ export const validateOtp = (otpData: otpTypes) => {
         : otp.length !== 6
           ? "Verification code must be exactly 6 digits"
           : "",
+  };
+
+  return errors;
+};
+
+export const validateResetPasswordData = (
+  resetPasswordData: resetPasswordData,
+) => {
+  const { password, confirmPassword } = resetPasswordData;
+
+  const errors = {
+    password: !password.trim()
+      ? "Password is required"
+      : password.length < 7
+        ? "Password length should be more than seven characters"
+        : !/[A-Z]/.test(password)
+          ? "Password must contain at least one uppercase letter"
+          : !/[a-z]/.test(password)
+            ? "Password must contain at least one lowercase letter"
+            : !/[0-9]/.test(password)
+              ? "Password must contain at least one number"
+              : !/[\W_]/.test(password)
+                ? "Password must contain at least one special character"
+                : "",
+
+    confirmPassword: !confirmPassword.trim()
+      ? "Confirm password is required"
+      : confirmPassword !== password
+        ? "Passwords do not match"
+        : "",
   };
 
   return errors;
