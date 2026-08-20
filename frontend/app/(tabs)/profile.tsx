@@ -68,11 +68,17 @@ export default function ProfileScreen() {
           <Text className="font-inter-bold text-gray-500">Account</Text>
 
           <View className="bg-white border border-gray-100 rounded-3xl elevation-sm">
-            <SettingsCard icon={MapPin} label="Saved address" data="2 saved" />
+            <SettingsCard
+              route="/address"
+              icon={MapPin}
+              label="Saved address"
+              data="2 saved"
+            />
 
             <View className="bg-gray-200 w-full h-[2px]" />
 
             <SettingsCard
+              route="/payment-methods"
               icon={CreditCard}
               label="Payment methods"
               data="Visa .... 4291"
@@ -81,6 +87,7 @@ export default function ProfileScreen() {
             <View className="bg-gray-200 w-full h-[2px]" />
 
             <SettingsCard
+              route="/offers"
               icon={TicketPercent}
               label="Offers & coupons"
               data="3 active"
@@ -90,9 +97,18 @@ export default function ProfileScreen() {
           <Text className="font-inter-bold text-gray-500">Preferences</Text>
 
           <View className="bg-white border border-gray-100 rounded-3xl elevation-sm">
-            <SettingsCard icon={Bell} label="Notifications" data="on" />
+            <SettingsCard
+              route="/help-center"
+              icon={Bell}
+              label="Notifications"
+              data="on"
+            />
             <View className="bg-gray-200 w-full h-[2px]" />
-            <SettingsCard icon={BadgeQuestionMark} label="Help center" />
+            <SettingsCard
+              route="/help-center"
+              icon={BadgeQuestionMark}
+              label="Help center"
+            />
           </View>
 
           <View className="gap-4">

@@ -40,6 +40,12 @@
           }
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "TastyGo uses your location to find nearby restaurants and deliver your order to the correct address."
+        }
+      ],
       "expo-secure-store"
     ],
     "experiments": {
