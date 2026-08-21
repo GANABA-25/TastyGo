@@ -1,7 +1,38 @@
 import { House, Trash2 } from "lucide-react-native";
 import { Pressable, Text, View } from "react-native";
 
-const AddressCard = () => {
+type AddressData = {
+  city: string | null;
+  country: string | null;
+  district: string | null;
+  formattedAddress: string | null;
+  isoCountryCode: string | null;
+  name: string | null;
+  postalCode: string | null;
+  region: string | null;
+  street: string | null;
+  streetNumber: string | null;
+  subregion: string | null;
+  timezone: string | null;
+};
+
+type AddressCardProps = {
+  address: AddressData | null;
+};
+
+const AddressCard = ({ address }: AddressCardProps) => {
+  if (!address) {
+    return null;
+  }
+
+  const streetAddress = [address.streetNumber, address.street]
+    .filter(Boolean)
+    .join(" ");
+
+  const locationAddress =
+    streetAddress ||
+    address.formattedAddress ||
+    [address.district, address.city, address.region].filter(Boolean).join(", ");
   return (
     <View className="flex-row items-center gap-3 rounded-2xl border border-gray-200 bg-white p-4 elevation-sm">
       <View className="h-11 w-11 items-center justify-center rounded-full bg-primary-light">
@@ -20,11 +51,13 @@ const AddressCard = () => {
           className="font-inter text-sm leading-5 text-gray-500"
           numberOfLines={2}
         >
-          24 Rue des lias, Apt 5B, Paris 75011
+          {locationAddress}
         </Text>
 
         <Text className="font-inter text-xs text-gray-400">
-          Ring twice · Third floor
+          {[address.district, address.city, address.region]
+            .filter(Boolean)
+            .join(" · ")}
         </Text>
       </View>
 

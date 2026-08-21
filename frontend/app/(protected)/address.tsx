@@ -1,45 +1,16 @@
-import AddressCard from "@/src/components/addressCard";
-import { useLocation } from "@/src/hooks/useLoaction";
-import { MapPinPlus } from "lucide-react-native";
+import LocationMap from "@/src/components/locationMap";
+import { router } from "expo-router";
 import { useEffect } from "react";
-import { Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
+import { View } from "react-native";
 
 const Address = () => {
-  const { requestLocation, isLoading, hasPermission, address, error } =
-    useLocation();
-
-  console.log(address);
-
   useEffect(() => {
-    if (error) {
-      Toast.show({
-        type: "error",
-        text1: error || "Something went wrong",
-      });
-    }
-  }, [error]);
-
+    router.push("/location-sheet");
+  }, [0]);
   return (
-    <SafeAreaView className="flex-1 mx-4 gap-4">
-      <View>
-        <AddressCard />
-      </View>
-
-      <Pressable
-        onPress={requestLocation}
-        disabled={isLoading}
-        className="flex-row items-center justify-center gap-2 rounded-2xl border border-dashed border-primary bg-primary-light/20 p-5"
-        android_ripple={{ color: "#fed7c8" }}
-      >
-        <MapPinPlus size={20} color="#fd6c39" />
-
-        <Text className="font-inter-bold text-primary">
-          {isLoading ? "Getting location..." : "Add New Address"}
-        </Text>
-      </Pressable>
-    </SafeAreaView>
+    <View className="flex-1 bg-white">
+      <LocationMap />
+    </View>
   );
 };
 
