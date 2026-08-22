@@ -5,7 +5,7 @@ import {
   verifyOtpValidator,
   passwordResetValidator,
 } from "../../validator/authValidator.ts";
-import { validateRequest } from "../../middleware/vlidateRequest.ts";
+import { validateRequest } from "../../middleware/validateRequest.ts";
 import authController from "./auth.controller.ts";
 
 const router = Router();

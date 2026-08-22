@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import AuthRoutes from "./modules/auth/auth.routes.ts";
+import RestaurantRoutes from "./modules/restaurants/restaurants.routes.ts";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/auth", AuthRoutes);
+app.use("/restaurants", RestaurantRoutes);
 
 const PORT = process.env.PORT || 8090;
 

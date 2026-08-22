@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { Plus, Star } from "lucide-react-native";
 import { FlatList, Image, Pressable, Text, View } from "react-native";
 import { popularFoods } from "../data/dummyData";
@@ -12,7 +13,17 @@ const FoodCard = () => {
       keyExtractor={(item) => item.id}
       contentContainerClassName="flex-row gap-3"
       renderItem={({ item }) => (
-        <Pressable className="w-56 overflow-hidden rounded-3xl border border-gray-200 bg-white elevation-sm">
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: "/foodDetail",
+              params: {
+                id: item.id,
+              },
+            })
+          }
+          className="w-56 overflow-hidden rounded-3xl border border-gray-200 bg-white elevation-sm"
+        >
           <View className="h-36 overflow-hidden">
             <Image
               source={{ uri: item.image }}

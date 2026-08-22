@@ -1,7 +1,9 @@
 import FoodCard from "@/src/components/foodCard";
 import Input from "@/src/components/Input";
 import RestaurantsCard from "@/src/components/restaurantsCard";
-import { categories, restaurants } from "@/src/data/dummyData";
+import { categories } from "@/src/data/dummyData";
+import { useFetch } from "@/src/hooks/useFetch";
+import { getAllRestaurants } from "@/src/util/https";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   Bell,
@@ -18,10 +20,16 @@ export default function HomeScreen() {
   const [pressedCategory, setPressedCategory] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
+  const { data, isLoading, isError, refetch } = useFetch({
+    queryKey: ["restaurants"],
+    queryFn: getAllRestaurants,
+    errorMessage: "Failed to load restaurants.",
+  });
+
   const filteredRestaurants =
     selectedCategory === "All"
-      ? restaurants
-      : restaurants.filter((restaurant) =>
+      ? data.restaurants
+      : data.restaurants.filter((restaurant: any) =>
           restaurant.tags.includes(selectedCategory),
         );
 

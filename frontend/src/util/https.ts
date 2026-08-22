@@ -36,3 +36,8 @@ export const resetPassword = async (data: ResetPasswordRequest) => {
   const response = await api.post("/auth/password-reset", data);
   return response.data;
 };
+
+export const getAllRestaurants = async () => {
+  const response = await api.get("/restaurants/getAllRestaurants");
+  return response.data;
+};
