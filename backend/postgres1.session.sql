@@ -214,8 +214,6 @@ INSERT INTO "FoodExtra"
   "createdAt"
 )
 VALUES
-
--- Classic Beef Smashburger
 (
   gen_random_uuid()::text,
   (SELECT "id" FROM "Food" WHERE "name" = 'Classic Beef Smashburger'),
@@ -244,8 +242,6 @@ VALUES
   45,
   NOW()
 ),
-
--- Broasted Chicken & Fried Rice
 (
   gen_random_uuid()::text,
   (SELECT "id" FROM "Food" WHERE "name" = 'Broasted Chicken & Fried Rice'),
@@ -274,8 +270,6 @@ VALUES
   5,
   NOW()
 ),
-
--- Papa's Special Pizza
 (
   gen_random_uuid()::text,
   (SELECT "id" FROM "Food" WHERE "name" = 'Papa''s Special Pizza'),
@@ -304,8 +298,6 @@ VALUES
   8,
   NOW()
 ),
-
--- Beef Carnitas Tacos
 (
   gen_random_uuid()::text,
   (SELECT "id" FROM "Food" WHERE "name" = 'Beef Carnitas Tacos'),

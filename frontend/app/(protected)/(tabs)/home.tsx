@@ -28,8 +28,8 @@ export default function HomeScreen() {
 
   const filteredRestaurants =
     selectedCategory === "All"
-      ? data.restaurants
-      : data.restaurants.filter((restaurant: any) =>
+      ? data?.restaurants
+      : data?.restaurants.filter((restaurant: any) =>
           restaurant.tags.includes(selectedCategory),
         );
 
@@ -37,14 +37,14 @@ export default function HomeScreen() {
     <SafeAreaView className="flex-1 bg-primary-light" edges={["top"]}>
       <View className="flex-1 bg-white">
         <View className="overflow-hidden bg-primary-light rounded-b-[28px] p-4">
-          <View className="flex-row items-center justify-between">
+          <View className="flex-row justify-between items-center">
             <Pressable className="flex-1">
-              <Text className="font-inter text-gray-500">Deliver to</Text>
+              <Text className="text-gray-500 font-inter">Deliver to</Text>
 
               <View className="mt-2 flex-row items-center gap-1.5">
                 <MapPin size={18} color="#fd6c39" strokeWidth={2.5} />
 
-                <Text className="font-inter-bold text-2xl capitalize">
+                <Text className="text-2xl capitalize font-inter-bold">
                   Achimota-mile 7
                 </Text>
 
@@ -53,7 +53,7 @@ export default function HomeScreen() {
             </Pressable>
 
             <Pressable className="relative">
-              <View className="h-11 w-11 items-center justify-center rounded-full bg-white elevation-sm">
+              <View className="justify-center items-center w-11 h-11 bg-white rounded-full elevation-sm">
                 <Bell size={20} color="#111827" strokeWidth={2} />
               </View>
 
@@ -61,7 +61,7 @@ export default function HomeScreen() {
             </Pressable>
           </View>
 
-          <View className="flex-row items-center gap-3 mt-8">
+          <View className="flex-row gap-3 items-center mt-8">
             <View className="flex-1">
               <Input
                 icon={Search}
@@ -72,7 +72,7 @@ export default function HomeScreen() {
               />
             </View>
 
-            <Pressable className="h-12 w-12 items-center justify-center rounded-full bg-primary elevation-sm">
+            <Pressable className="justify-center items-center w-12 h-12 rounded-full bg-primary elevation-sm">
               <SlidersHorizontal size={20} color="#fff" strokeWidth={2} />
             </Pressable>
           </View>
@@ -121,18 +121,18 @@ export default function HomeScreen() {
                 )}
               />
 
-              <View className="relative overflow-hidden rounded-3xl elevation-sm">
+              <View className="overflow-hidden relative rounded-3xl elevation-sm">
                 <LinearGradient
                   colors={["#fe872f", "#FF6B35"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   className="gap-2 p-4"
                 >
-                  <Text className="font-inter uppercase text-white/80">
+                  <Text className="uppercase font-inter text-white/80">
                     Tonight only
                   </Text>
 
-                  <Text className="font-inter-bold text-3xl text-white">
+                  <Text className="text-3xl text-white font-inter-bold">
                     15% off your first order
                   </Text>
 

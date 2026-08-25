@@ -47,3 +47,8 @@ export type ResetPasswordRequest = {
   confirmPassword: string;
   resetRequestId: string;
 };
+
+
+export type restaurantsRequest = {
+  
+}

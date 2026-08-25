@@ -6,8 +6,6 @@ const getAllRestaurants = async (req: AuthRequest, res: Response) => {
   try {
     const allRestaurants = await prisma.restaurant.findMany();
 
-    console.log(allRestaurants);
-
     return res.status(200).json({
       restaurants: allRestaurants,
     });
