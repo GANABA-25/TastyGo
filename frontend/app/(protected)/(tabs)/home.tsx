@@ -1,0 +1,169 @@
+import FoodCard from "@/src/components/foodCard";
+import Input from "@/src/components/Input";
+import RestaurantsCard from "@/src/components/restaurantsCard";
+import { categories } from "@/src/data/dummyData";
+import { useFetch } from "@/src/hooks/useFetch";
+import { getAllRestaurants } from "@/src/util/https";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  Bell,
+  ChevronDown,
+  MapPin,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react-native";
+import { useState } from "react";
+import { FlatList, Pressable, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function HomeScreen() {
+  const [pressedCategory, setPressedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const { data, isLoading, isError, refetch } = useFetch({
+    queryKey: ["restaurants"],
+    queryFn: getAllRestaurants,
+    errorMessage: "Failed to load restaurants.",
+  });
+
+  const filteredRestaurants =
+    selectedCategory === "All"
+      ? data?.restaurants
+      : data?.restaurants.filter((restaurant: any) =>
+          restaurant.tags.includes(selectedCategory),
+        );
+
+  return (
+    <SafeAreaView className="flex-1 bg-primary-light" edges={["top"]}>
+      <View className="flex-1 bg-white">
+        <View className="overflow-hidden bg-primary-light rounded-b-[28px] p-4">
+          <View className="flex-row justify-between items-center">
+            <Pressable className="flex-1">
+              <Text className="text-gray-500 font-inter">Deliver to</Text>
+
+              <View className="mt-2 flex-row items-center gap-1.5">
+                <MapPin size={18} color="#fd6c39" strokeWidth={2.5} />
+
+                <Text className="text-2xl capitalize font-inter-bold">
+                  Achimota-mile 7
+                </Text>
+
+                <ChevronDown size={18} color="#9CA3AF" strokeWidth={2} />
+              </View>
+            </Pressable>
+
+            <Pressable className="relative">
+              <View className="justify-center items-center w-11 h-11 bg-white rounded-full elevation-sm">
+                <Bell size={20} color="#111827" strokeWidth={2} />
+              </View>
+
+              <View className="absolute right-2.5 top-2 h-2 w-2 rounded-full bg-red-500" />
+            </Pressable>
+          </View>
+
+          <View className="flex-row gap-3 items-center mt-8">
+            <View className="flex-1">
+              <Input
+                icon={Search}
+                TextInputConfig={{
+                  autoCorrect: false,
+                  placeholder: "Search dishes, restaurants...",
+                }}
+              />
+            </View>
+
+            <Pressable className="justify-center items-center w-12 h-12 rounded-full bg-primary elevation-sm">
+              <SlidersHorizontal size={20} color="#fff" strokeWidth={2} />
+            </Pressable>
+          </View>
+        </View>
+
+        <FlatList
+          data={filteredRestaurants}
+          keyExtractor={(item) => String(item.id)}
+          showsVerticalScrollIndicator={false}
+          contentContainerClassName="gap-4 px-4 pb-8 pt-4"
+          ListHeaderComponent={
+            <View className="gap-4">
+              <FlatList
+                data={categories}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => String(item.id)}
+                contentContainerClassName="flex-row gap-3 py-2"
+                renderItem={({ item }) => (
+                  <Pressable
+                    onPress={() => setSelectedCategory(item.label)}
+                    onPressIn={() => setPressedCategory(item.label)}
+                    onPressOut={() => setPressedCategory(null)}
+                    className={`flex-row h-11 items-center justify-center rounded-full border border-gray-200 px-5 elevation-sm ${
+                      item.label === selectedCategory
+                        ? "bg-primary"
+                        : "bg-white"
+                    } ${
+                      pressedCategory === item.label
+                        ? "scale-95 opacity-60"
+                        : "scale-100 opacity-100"
+                    }`}
+                  >
+                    <Text>{item.emoji}</Text>
+
+                    <Text
+                      className={`ml-2 font-inter-bold ${
+                        item.label === selectedCategory
+                          ? "text-white"
+                          : "text-gray-800"
+                      }`}
+                    >
+                      {item.label}
+                    </Text>
+                  </Pressable>
+                )}
+              />
+
+              <View className="overflow-hidden relative rounded-3xl elevation-sm">
+                <LinearGradient
+                  colors={["#fe872f", "#FF6B35"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  className="gap-2 p-4"
+                >
+                  <Text className="uppercase font-inter text-white/80">
+                    Tonight only
+                  </Text>
+
+                  <Text className="text-3xl text-white font-inter-bold">
+                    15% off your first order
+                  </Text>
+
+                  <Text className="font-inter text-white/80">
+                    Use code QUICK15 at checkout
+                  </Text>
+                </LinearGradient>
+
+                <View className="absolute left-[23rem] bottom-12 bg-white/10 w-[7rem] h-[7rem] rounded-full" />
+
+                <View className="absolute right-[5rem] top-20 bg-white/10 w-[7rem] h-[7rem] rounded-full" />
+              </View>
+
+              <View className="gap-4">
+                <View className="flex-row justify-between items-center">
+                  <Text className="font-inter-bold">Popular right now</Text>
+
+                  <Text className="font-inter-bold text-primary">See all</Text>
+                </View>
+
+                <FoodCard />
+              </View>
+
+              <View className="flex-1 gap-4">
+                <Text className="font-inter-bold">Featured restaurants</Text>
+              </View>
+            </View>
+          }
+          renderItem={({ item }) => <RestaurantsCard item={item} />}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
