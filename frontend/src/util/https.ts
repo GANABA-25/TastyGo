@@ -47,3 +47,9 @@ export const getFoodDetail = async (id: string) => {
 
   return response.data;
 };
+
+export const getRestaurantData = async (id: string) => {
+  const response = await api.get(`/restaurants/getRestaurantData/${id}`);
+
+  return response.data;
+};

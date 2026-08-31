@@ -11,6 +11,12 @@ router.get(
 );
 
 router.get(
+  "/getRestaurantData/:id",
+  authenticate,
+  restaurantController.getRestaurantData,
+);
+
+router.get(
   "/getFoodDetail/:id",
   authenticate,
   restaurantController.getFoodDetail,

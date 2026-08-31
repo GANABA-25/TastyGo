@@ -18,6 +18,38 @@ const getAllRestaurants = async (req: AuthRequest, res: Response) => {
   }
 };
 
+const getRestaurantData = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    console.log("came here ----");
+
+    const restaurantData = await prisma.restaurant.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!restaurantData) {
+      return res.status(404).json({
+        message: "Food Details not found!",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Food details fetched successfully",
+      data: restaurantData,
+    });
+  } catch (error) {
+    console.error("Get food detail error:", error);
+
+    return res.status(500).json({
+      message:
+        "An error occurred while processing your request. Please try again later.",
+    });
+  }
+};
+
 const getFoodDetail = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
@@ -51,5 +83,6 @@ const getFoodDetail = async (req: AuthRequest, res: Response) => {
 
 export default {
   getAllRestaurants,
+  getRestaurantData,
   getFoodDetail,
 };

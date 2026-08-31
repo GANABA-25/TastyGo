@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 
 const ReviewCard = () => {
   return (
-    <View className="p-4 bg-white rounded-xl border border-gray-200 elevation-sm">
+    <View className="gap-2 p-4 bg-white rounded-xl border border-gray-200 elevation-sm">
       <View className="flex-row justify-between items-center">
         <Text className="text-2xl font-inter-bold">Amara P.</Text>
 

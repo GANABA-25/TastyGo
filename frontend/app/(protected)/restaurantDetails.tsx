@@ -1,5 +1,6 @@
 import ReviewCard from "@/src/components/reviewCard";
-import { restaurants } from "@/src/data/dummyData";
+import { useFetch } from "@/src/hooks/useFetch";
+import { getRestaurantData } from "@/src/util/https";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -9,6 +10,7 @@ import {
   Heart,
   MapPin,
   Plus,
+  Star,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
@@ -17,15 +19,13 @@ const RestaurantDetails = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [selectedCategory, setSelectedCategory] = useState("Popular");
 
-  console.log(id);
+  const { data, isLoading, isError, refetch } = useFetch({
+    queryKey: ["restaurantData"],
+    queryFn: () => getRestaurantData(id),
+    errorMessage: "Failed to load restaurants.",
+  });
 
-  // const { data, isLoading, isError, refetch } = useFetch({
-  //   queryKey: ["foodDetails"],
-  //   queryFn: () => getFoodDetail(id),
-  //   errorMessage: "Failed to load restaurants.",
-  // });
-
-  const restaurant = restaurants.find((restaurant) => restaurant.id === id);
+  console.log("checking data", data);
 
   return (
     <View className="flex-1">
@@ -33,7 +33,7 @@ const RestaurantDetails = () => {
       <View className="relative h-[30%]">
         <Image
           source={{
-            uri: "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+            uri: data?.data.image,
           }}
           className="w-full h-full"
           resizeMode="cover"
@@ -61,25 +61,40 @@ const RestaurantDetails = () => {
           }}
         >
           <View className="flex-col gap-6">
-            <View>
-              <Text className="text-3xl font-inter-bold">Ember & Bun</Text>
-              <Text>Burgers · American</Text>
+            <View className="flex-row justify-between items-start">
+              <View>
+                <Text className="text-3xl font-inter-bold">
+                  {data?.data?.name}
+                </Text>
+                <Text>Burgers · American</Text>
+              </View>
+
+              <View className="flex-row gap-2 items-center">
+                <Star size={20} color="#fd6c39" fill="#fd6c39" />
+                <Text className="font-inter-bold">{data.data?.rating}</Text>
+              </View>
             </View>
 
             <View className="flex-row gap-3">
               <View className="flex-1 gap-2 justify-center items-center p-4 bg-gray-100 rounded-2xl">
                 <Clock size={20} color="#fd6c39" />
-                <Text className="text-gray-800 font-inter-bold">18-25 min</Text>
+                <Text className="text-gray-800 font-inter-bold">
+                  {data?.data.eta}
+                </Text>
               </View>
 
               <View className="flex-1 gap-2 justify-center items-center p-4 bg-gray-100 rounded-2xl">
                 <Bike size={20} color="#fd6c39" />
-                <Text className="text-gray-800 font-inter-bold">Free</Text>
+                <Text className="text-gray-800 font-inter-bold">
+                  {data?.data.deliveryFee}
+                </Text>
               </View>
 
               <View className="flex-1 gap-2 justify-center items-center p-4 bg-gray-100 rounded-2xl">
                 <MapPin size={20} color="#fd6c39" />
-                <Text className="text-gray-800 font-inter-bold">1.2km</Text>
+                <Text className="text-gray-800 font-inter-bold">
+                  {data?.data?.distance}
+                </Text>
               </View>
             </View>
 
