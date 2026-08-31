@@ -41,3 +41,9 @@ export const getAllRestaurants = async () => {
   const response = await api.get("/restaurants/getAllRestaurants");
   return response.data;
 };
+
+export const getFoodDetail = async (id: string) => {
+  const response = await api.get(`/restaurants/getFoodDetail/${id}`);
+
+  return response.data;
+};

@@ -37,7 +37,7 @@ const OnboardingCard = ({
 
         <View className="absolute inset-0 bg-black/30" />
 
-        <View className="absolute top-12 left-8 right-8 flex-row justify-between items-center">
+        <View className="absolute right-8 left-8 top-12 flex-row justify-between items-center">
           <Logo />
 
           <Pressable onPress={() => router.replace("/login")}>
@@ -47,7 +47,7 @@ const OnboardingCard = ({
       </View>
 
       <View className="flex-1 justify-between px-8 py-8">
-        <View className="w-20 h-20 rounded-full bg-primary-light items-center justify-center">
+        <View className="justify-center items-center w-20 h-20 rounded-full bg-primary-light">
           <Ionicons name={iconType} size={32} color="#fd6c39" />
         </View>
 

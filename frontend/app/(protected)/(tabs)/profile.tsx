@@ -28,46 +28,46 @@ export default function ProfileScreen() {
       >
         <View className="overflow-hidden gap-4 bg-primary-light rounded-b-[28px] p-4 elevation-sm">
           <View className="flex-row justify-between items-center">
-            <View className="flex-row items-center gap-4">
-              <View className="h-20 w-20 items-center justify-center rounded-full bg-primary elevation-sm">
-                <Text className="text-white font-inter-bold text-xl">
+            <View className="flex-row gap-4 items-center">
+              <View className="justify-center items-center w-20 h-20 rounded-full bg-primary elevation-sm">
+                <Text className="text-xl text-white font-inter-bold">
                   {getInitials(userData?.fullName)}
                 </Text>
               </View>
               <View>
-                <Text className="font-inter-bold text-2xl">
+                <Text className="text-2xl font-inter-bold">
                   {userData?.fullName}
                 </Text>
                 <Text className="font-inter">{userData?.email}</Text>
               </View>
             </View>
-            <Pressable className="h-16 w-16 items-center justify-center rounded-full bg-white elevation-sm">
+            <Pressable className="justify-center items-center w-16 h-16 bg-white rounded-full elevation-sm">
               <Pencil size={20} />
             </Pressable>
           </View>
 
-          <View className="flex-row justify-around items-center gap-4">
-            <View className="bg-white rounded-3xl justify-center items-center py-4 px-8">
-              <Text className="font-inter-bold text-2xl">3</Text>
-              <Text className="font-inter text-gray-500">Orders</Text>
+          <View className="flex-row gap-4 justify-around items-center">
+            <View className="justify-center items-center px-8 py-4 bg-white rounded-3xl">
+              <Text className="text-2xl font-inter-bold">3</Text>
+              <Text className="text-gray-500 font-inter">Orders</Text>
             </View>
 
-            <View className="bg-white rounded-3xl justify-center items-center py-4 px-8">
-              <Text className="font-inter-bold text-2xl">2</Text>
-              <Text className="font-inter text-gray-500">address</Text>
+            <View className="justify-center items-center px-8 py-4 bg-white rounded-3xl">
+              <Text className="text-2xl font-inter-bold">2</Text>
+              <Text className="text-gray-500 font-inter">address</Text>
             </View>
 
-            <View className="bg-white rounded-3xl justify-center items-center py-4 px-8">
-              <Text className="font-inter-bold text-2xl">3</Text>
-              <Text className="font-inter text-gray-500">Offers</Text>
+            <View className="justify-center items-center px-8 py-4 bg-white rounded-3xl">
+              <Text className="text-2xl font-inter-bold">3</Text>
+              <Text className="text-gray-500 font-inter">Offers</Text>
             </View>
           </View>
         </View>
 
         <View className="gap-4 px-4">
-          <Text className="font-inter-bold text-gray-500">Account</Text>
+          <Text className="text-gray-500 font-inter-bold">Account</Text>
 
-          <View className="bg-white border border-gray-100 rounded-3xl elevation-sm">
+          <View className="bg-white rounded-3xl border border-gray-100 elevation-sm">
             <SettingsCard
               route="/address"
               icon={MapPin}
@@ -94,9 +94,9 @@ export default function ProfileScreen() {
             />
           </View>
 
-          <Text className="font-inter-bold text-gray-500">Preferences</Text>
+          <Text className="text-gray-500 font-inter-bold">Preferences</Text>
 
-          <View className="bg-white border border-gray-100 rounded-3xl elevation-sm">
+          <View className="bg-white rounded-3xl border border-gray-100 elevation-sm">
             <SettingsCard
               route="/help-center"
               icon={Bell}
@@ -119,11 +119,11 @@ export default function ProfileScreen() {
               onPressIn={() => setPressed(true)}
               onPressOut={() => setPressed(false)}
               className={`flex-row bg-white border border-gray-100 rounded-full justify-center items-center gap-4 elevation-sm p-4 ${
-                pressed ? "scale-95 opacity-60" : "scale-100 opacity-100"
+                pressed ? "opacity-60 scale-95" : "opacity-100 scale-100"
               }`}
             >
               <LogOut size={20} color="red" />
-              <Text className="font-inter-bold text-red-600">Log out</Text>
+              <Text className="text-red-600 font-inter-bold">Log out</Text>
             </Pressable>
           </View>
         </View>

@@ -10,4 +10,10 @@ router.get(
   restaurantController.getAllRestaurants,
 );
 
+router.get(
+  "/getFoodDetail/:id",
+  authenticate,
+  restaurantController.getFoodDetail,
+);
+
 export default router;
