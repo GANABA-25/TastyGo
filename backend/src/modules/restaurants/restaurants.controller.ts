@@ -4,6 +4,7 @@ import prisma from "../../lib/prisma.ts";
 
 const getAllRestaurants = async (req: AuthRequest, res: Response) => {
   try {
+    console.log("came here-------");
     const allRestaurants = await prisma.restaurant.findMany();
 
     return res.status(200).json({
@@ -21,8 +22,6 @@ const getAllRestaurants = async (req: AuthRequest, res: Response) => {
 const getRestaurantData = async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-
-    console.log("came here ----");
 
     const restaurantData = await prisma.restaurant.findUnique({
       where: {

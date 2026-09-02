@@ -1,3 +1,4 @@
+import RestaurantDetailsLoading from "@/src/components/loadingCard/RestaurantDetailsLoading";
 import ReviewCard from "@/src/components/reviewCard";
 import { useFetch } from "@/src/hooks/useFetch";
 import { getRestaurantData } from "@/src/util/https";
@@ -15,6 +16,34 @@ import {
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 
+const RestaurantDetailsError = ({ onRetry }: { onRetry: () => void }) => {
+  return (
+    <View className="flex-1 justify-center items-center px-6 bg-white">
+      {" "}
+      <StatusBar hidden />{" "}
+      <View className="justify-center items-center mb-5 w-16 h-16 bg-red-50 rounded-full">
+        {" "}
+        <Text className="text-2xl">!</Text>{" "}
+      </View>{" "}
+      <Text className="mb-2 text-xl text-center font-inter-bold">
+        {" "}
+        Couldn't load restaurant{" "}
+      </Text>{" "}
+      <Text className="mb-6 text-center text-gray-500 font-inter">
+        {" "}
+        Something went wrong while loading this restaurant.{" "}
+      </Text>{" "}
+      <Pressable
+        onPress={onRetry}
+        className="px-6 py-3 rounded-full bg-primary"
+      >
+        {" "}
+        <Text className="text-white font-inter-bold">Try again</Text>{" "}
+      </Pressable>{" "}
+    </View>
+  );
+};
+
 const RestaurantDetails = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [selectedCategory, setSelectedCategory] = useState("Popular");
@@ -25,7 +54,15 @@ const RestaurantDetails = () => {
     errorMessage: "Failed to load restaurants.",
   });
 
-  console.log("checking data", data);
+  if (isLoading) {
+    return <RestaurantDetailsLoading />;
+  }
+
+  if (isError) {
+    return <RestaurantDetailsError onRetry={() => refetch()} />;
+  }
+  // const restaurant = data?.data;
+  // if (!restaurant) { return <RestaurantDetailsEmpty />; }
 
   return (
     <View className="flex-1">
@@ -33,7 +70,7 @@ const RestaurantDetails = () => {
       <View className="relative h-[30%]">
         <Image
           source={{
-            uri: data?.data.image,
+            uri: data?.data?.image,
           }}
           className="w-full h-full"
           resizeMode="cover"
@@ -79,14 +116,14 @@ const RestaurantDetails = () => {
               <View className="flex-1 gap-2 justify-center items-center p-4 bg-gray-100 rounded-2xl">
                 <Clock size={20} color="#fd6c39" />
                 <Text className="text-gray-800 font-inter-bold">
-                  {data?.data.eta}
+                  {data?.data?.eta}
                 </Text>
               </View>
 
               <View className="flex-1 gap-2 justify-center items-center p-4 bg-gray-100 rounded-2xl">
                 <Bike size={20} color="#fd6c39" />
                 <Text className="text-gray-800 font-inter-bold">
-                  {data?.data.deliveryFee}
+                  {data?.data?.deliveryFee}
                 </Text>
               </View>
 
