@@ -41,6 +41,7 @@ model PasswordResetRequest {
 model Restaurant {
   id String @id @default(cuid())
   name String
+  tags String[]
   rating Float?
   reviews Int @default(0)
   eta String?
@@ -48,6 +49,7 @@ model Restaurant {
   deliveryFee Decimal @default(0)
   image String?
   featured Boolean @default(false)
+  popular Boolean @default(false)
   promo String?
 
   foods Food[]
@@ -64,9 +66,12 @@ model Food {
   image String?
   rating Float?
   price Decimal
+  category String
+  popular Boolean @default(false)
 
   restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   extras FoodExtra[]
+  reviews FoodReview[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -79,10 +84,18 @@ model FoodExtra {
   foodId String
   name String
   price Decimal
-
   food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
+  @@index([foodId])
+}
 
+model FoodReview {
+  id String @id @default(cuid())
+  foodId String
+  name String
+  rating Int
+  text String
+  createdAt DateTime @default(now())
+  food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
   @@index([foodId])
 }

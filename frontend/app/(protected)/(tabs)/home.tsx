@@ -1,3 +1,4 @@
+import Button from "@/src/components/button";
 import FoodCard from "@/src/components/foodCard";
 import Input from "@/src/components/Input";
 import RestaurantLoadingCard from "@/src/components/loadingCard/restaurantLoadingCard";
@@ -12,6 +13,7 @@ import {
   MapPin,
   Search,
   SlidersHorizontal,
+  UtensilsCrossed,
 } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -160,7 +162,6 @@ export default function HomeScreen() {
 
           <View className="flex-row justify-between items-center">
             <Text className="font-inter-bold">Popular right now</Text>
-
             <Text className="font-inter-bold text-primary">See all</Text>
           </View>
 
@@ -168,20 +169,41 @@ export default function HomeScreen() {
 
           <Text className="font-inter-bold">Featured restaurants</Text>
 
-          {filteredRestaurants.length === 0 ? (
-            <Text>Empty</Text>
+          {isLoading || isRefetching ? (
+            <View className="gap-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <RestaurantLoadingCard key={index} />
+              ))}
+            </View>
+          ) : filteredRestaurants.length === 0 ? (
+            <View className="justify-center items-center px-6 py-10 bg-gray-50 rounded-3xl border border-gray-100">
+              <View className="justify-center items-center mb-4 w-16 h-16 bg-orange-100 rounded-full">
+                <UtensilsCrossed size={30} color="#FF6B35" />
+              </View>
+
+              <Text className="mb-2 text-lg text-center text-gray-900 font-inter-bold">
+                No restaurants found
+              </Text>
+
+              <Text className="max-w-[280px] text-center font-inter text-sm leading-5 text-gray-500">
+                We couldn't fetch any restaurants at the moment. Try again
+                later.
+              </Text>
+
+              <View className="mt-4">
+                <Button
+                  onPress={refetch}
+                  isLoading={isRefetching}
+                  label="View all restaurants"
+                />
+              </View>
+            </View>
           ) : (
-            <>
-              {isLoading ? (
-                <RestaurantLoadingCard />
-              ) : (
-                <View className="gap-4">
-                  {filteredRestaurants.map((item: any) => (
-                    <RestaurantsCard key={item.id} item={item} />
-                  ))}
-                </View>
-              )}
-            </>
+            <View className="gap-4">
+              {filteredRestaurants.map((item: any) => (
+                <RestaurantsCard key={item.id} item={item} />
+              ))}
+            </View>
           )}
         </ScrollView>
       </View>

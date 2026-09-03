@@ -274,114 +274,114 @@ export const restaurants: Restaurant[] = [
   },
 ];
 
-// export const dishes: Dish[] = [
-//   {
-//     id: "double-smash",
-//     name: "Double Smash Burger",
-//     description:
-//       "Two aged beef patties, molten cheddar, house pickles and smoked aioli in a brioche bun.",
-//     price: 13.5,
-//     image:
-//       "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
-//     rating: 4.9,
-//     category: "burger",
-//     restaurantId: "ember",
-//     popular: true,
-//   },
-//   {
-//     id: "margherita",
-//     name: "Margherita Fumo",
-//     description:
-//       "72-hour dough, San Marzano tomato, fior di latte and basil from the wood oven.",
-//     price: 15.0,
-//     image:
-//       "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
-//     rating: 4.8,
-//     category: "pizza",
-//     restaurantId: "forno",
-//     popular: true,
-//   },
-//   {
-//     id: "omakase-set",
-//     name: "Chef's Nigiri Set",
-//     description:
-//       "Twelve pieces of seasonal nigiri, cut to order and finished with aged soy.",
-//     price: 28.0,
-//     image:
-//       "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
-//     rating: 4.9,
-//     category: "sushi",
-//     restaurantId: "kaisen",
-//     popular: true,
-//   },
-//   {
-//     id: "tonkotsu",
-//     name: "Spicy Tonkotsu Ramen",
-//     description:
-//       "18-hour pork broth, chili oil, ajitama egg and thin Hakata noodles.",
-//     price: 16.5,
-//     image:
-//       "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
-//     rating: 4.7,
-//     category: "ramen",
-//     restaurantId: "shio",
-//     popular: true,
-//   },
-//   {
-//     id: "green-bowl",
-//     name: "Avocado Grain Bowl",
-//     description:
-//       "Farro, baby spinach, avocado, toasted seeds and a lemon-tahini dressing.",
-//     price: 12.0,
-//     image:
-//       "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
-//     rating: 4.6,
-//     category: "salad",
-//     restaurantId: "verde",
-//   },
-//   {
-//     id: "truffle-fries",
-//     name: "Truffle Parmesan Fries",
-//     description: "Hand-cut fries, black truffle oil, parmesan and chive.",
-//     price: 6.5,
-//     image:
-//       "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
-//     rating: 4.7,
-//     category: "burger",
-//     restaurantId: "ember",
-//   },
-// ];
+export const dishes: Dish[] = [
+  {
+    id: "double-smash",
+    name: "Double Smash Burger",
+    description:
+      "Two aged beef patties, molten cheddar, house pickles and smoked aioli in a brioche bun.",
+    price: 13.5,
+    image:
+      "https:res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+    rating: 4.9,
+    category: "burger",
+    restaurantId: "ember",
+    popular: true,
+  },
+  {
+    id: "margherita",
+    name: "Margherita Fumo",
+    description:
+      "72-hour dough, San Marzano tomato, fior di latte and basil from the wood oven.",
+    price: 15.0,
+    image:
+      "https:res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+    rating: 4.8,
+    category: "pizza",
+    restaurantId: "forno",
+    popular: true,
+  },
+  {
+    id: "omakase-set",
+    name: "Chef's Nigiri Set",
+    description:
+      "Twelve pieces of seasonal nigiri, cut to order and finished with aged soy.",
+    price: 28.0,
+    image:
+      "https:res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+    rating: 4.9,
+    category: "sushi",
+    restaurantId: "kaisen",
+    popular: true,
+  },
+  {
+    id: "tonkotsu",
+    name: "Spicy Tonkotsu Ramen",
+    description:
+      "18-hour pork broth, chili oil, ajitama egg and thin Hakata noodles.",
+    price: 16.5,
+    image:
+      "https:res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+    rating: 4.7,
+    category: "ramen",
+    restaurantId: "shio",
+    popular: true,
+  },
+  {
+    id: "green-bowl",
+    name: "Avocado Grain Bowl",
+    description:
+      "Farro, baby spinach, avocado, toasted seeds and a lemon-tahini dressing.",
+    price: 12.0,
+    image:
+      "https:res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+    rating: 4.6,
+    category: "salad",
+    restaurantId: "verde",
+  },
+  {
+    id: "truffle-fries",
+    name: "Truffle Parmesan Fries",
+    description: "Hand-cut fries, black truffle oil, parmesan and chive.",
+    price: 6.5,
+    image:
+      "https:res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+    rating: 4.7,
+    category: "burger",
+    restaurantId: "ember",
+  },
+];
 
-// export const addOns = [
-//   { id: "cheese", label: "Extra cheese", price: 1.5 },
-//   { id: "bacon", label: "Smoked bacon", price: 2.5 },
-//   { id: "egg", label: "Fried egg", price: 1.0 },
-//   { id: "jalapeno", label: "Pickled jalapeños", price: 0.8 },
-// ];
+export const addOns = [
+  { id: "cheese", label: "Extra cheese", price: 1.5 },
+  { id: "bacon", label: "Smoked bacon", price: 2.5 },
+  { id: "egg", label: "Fried egg", price: 1.0 },
+  { id: "jalapeno", label: "Pickled jalapeños", price: 0.8 },
+];
 
-// export const reviews = [
-//   {
-//     id: "1",
-//     name: "Amara P.",
-//     rating: 5,
-//     time: "2 days ago",
-//     text: "Arrived hot in 19 minutes. The smash burger is genuinely the best in the city.",
-//   },
-//   {
-//     id: "2",
-//     name: "Leo M.",
-//     rating: 4,
-//     time: "1 week ago",
-//     text: "Great flavours and packaging. Would love a bigger portion of fries.",
-//   },
-//   {
-//     id: "3",
-//     name: "Sofia K.",
-//     rating: 5,
-//     time: "2 weeks ago",
-//     text: "Driver was lovely and the live tracking was spot on the whole way.",
-//   },
-// ];
+export const reviews = [
+  {
+    id: "1",
+    name: "Amara P.",
+    rating: 5,
+    time: "2 days ago",
+    text: "Arrived hot in 19 minutes. The smash burger is genuinely the best in the city.",
+  },
+  {
+    id: "2",
+    name: "Leo M.",
+    rating: 4,
+    time: "1 week ago",
+    text: "Great flavours and packaging. Would love a bigger portion of fries.",
+  },
+  {
+    id: "3",
+    name: "Sofia K.",
+    rating: 5,
+    time: "2 weeks ago",
+    text: "Driver was lovely and the live tracking was spot on the whole way.",
+  },
+];
 
 // export const orderHistory = [
 //   {

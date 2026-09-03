@@ -4,7 +4,6 @@ import prisma from "../../lib/prisma.ts";
 
 const getAllRestaurants = async (req: AuthRequest, res: Response) => {
   try {
-    console.log("came here-------");
     const allRestaurants = await prisma.restaurant.findMany();
 
     return res.status(200).json({
@@ -27,20 +26,30 @@ const getRestaurantData = async (req: AuthRequest, res: Response) => {
       where: {
         id,
       },
+      include: {
+        foods: {
+          include: {
+            extras: true,
+            reviews: true,
+          },
+        },
+      },
     });
+
+    console.log(restaurantData);
 
     if (!restaurantData) {
       return res.status(404).json({
-        message: "Food Details not found!",
+        message: "Restaurant not found!",
       });
     }
 
     return res.status(200).json({
-      message: "Food details fetched successfully",
+      message: "Restaurant details fetched successfully",
       data: restaurantData,
     });
   } catch (error) {
-    console.error("Get food detail error:", error);
+    console.error("Get restaurant detail error:", error);
 
     return res.status(500).json({
       message:

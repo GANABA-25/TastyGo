@@ -54,6 +54,8 @@ const RestaurantDetails = () => {
     errorMessage: "Failed to load restaurants.",
   });
 
+  console.log("checking data", data?.data.foods);
+
   if (isLoading) {
     return <RestaurantDetailsLoading />;
   }
@@ -61,8 +63,6 @@ const RestaurantDetails = () => {
   if (isError) {
     return <RestaurantDetailsError onRetry={() => refetch()} />;
   }
-  // const restaurant = data?.data;
-  // if (!restaurant) { return <RestaurantDetailsEmpty />; }
 
   return (
     <View className="flex-1">
@@ -160,38 +160,43 @@ const RestaurantDetails = () => {
                 );
               })}
             </View>
+            {data?.data?.foods.map((dish: any) => (
+              <View
+                key={dish.id}
+                className="flex-row gap-4 items-center p-4 bg-white rounded-2xl border border-gray-200 elevation-sm"
+              >
+                <Image
+                  source={{
+                    uri: "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
+                  }}
+                  className="w-24 h-24 rounded-2xl"
+                  resizeMode="cover"
+                />
 
-            <View className="flex-row gap-4 items-center p-4 bg-white rounded-2xl border border-gray-200 elevation-sm">
-              <Image
-                source={{
-                  uri: "https://res.cloudinary.com/dkjlpfa1q/image/upload/v1785773761/burger4_wuiarl.jpg",
-                }}
-                className="w-24 h-24 rounded-2xl"
-                resizeMode="cover"
-              />
+                <View className="flex-1 min-w-0">
+                  <Text className="text-xl font-inter-bold" numberOfLines={1}>
+                    {dish.name}
+                  </Text>
 
-              <View className="flex-1 min-w-0">
-                <Text className="text-xl font-inter-bold" numberOfLines={1}>
-                  Double Smash Burger
-                </Text>
+                  <Text
+                    className="mt-1 text-gray-500 font-inter"
+                    numberOfLines={2}
+                  >
+                    {dish.description}
+                  </Text>
 
-                <Text
-                  className="mt-1 text-gray-500 font-inter"
-                  numberOfLines={2}
-                >
-                  Two aged beef patties, molten cheddar, house pickles and
-                  smoked
-                </Text>
+                  <View className="flex-row justify-between items-center mt-3">
+                    <Text className="text-primary font-inter-bold">
+                      ${dish.price}
+                    </Text>
 
-                <View className="flex-row justify-between items-center mt-3">
-                  <Text className="text-primary font-inter-bold">$13.50</Text>
-
-                  <Pressable className="justify-center items-center w-10 h-10 rounded-full bg-primary">
-                    <Plus size={20} color="white" strokeWidth={2.5} />
-                  </Pressable>
+                    <Pressable className="justify-center items-center w-10 h-10 rounded-full bg-primary">
+                      <Plus size={20} color="white" strokeWidth={2.5} />
+                    </Pressable>
+                  </View>
                 </View>
               </View>
-            </View>
+            ))}
 
             <View className="gap-4">
               <Text className="text-2xl font-inter-bold">Reviews</Text>
