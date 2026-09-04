@@ -4,13 +4,26 @@ import prisma from "../../lib/prisma.ts";
 
 const getAllRestaurants = async (req: AuthRequest, res: Response) => {
   try {
-    const allRestaurants = await prisma.restaurant.findMany();
+    const allRestaurants = await prisma.restaurant.findMany({
+      include: {
+        foods: {
+          where: {
+            popular: true,
+          },
+          include: {
+            extras: true,
+            reviews: true,
+          },
+        },
+      },
+    });
 
     return res.status(200).json({
       restaurants: allRestaurants,
     });
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Get all restaurants error:", error);
+
     return res.status(500).json({
       message:
         "An error occurred while processing your request. Please try again later.",
@@ -27,6 +40,7 @@ const getRestaurantData = async (req: AuthRequest, res: Response) => {
         id,
       },
       include: {
+        reviews: true,
         foods: {
           include: {
             extras: true,
@@ -66,8 +80,10 @@ const getFoodDetail = async (req: AuthRequest, res: Response) => {
       where: {
         id,
       },
+      include: {
+        extras: true,
+      },
     });
-    console.log(foodDetail);
 
     if (!foodDetail) {
       return res.status(404).json({

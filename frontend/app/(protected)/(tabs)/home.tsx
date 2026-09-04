@@ -36,6 +36,11 @@ export default function HomeScreen() {
     errorMessage: "Failed to load restaurants.",
   });
 
+  const popularFood =
+    data?.restaurants.flatMap((restaurant: any) =>
+      restaurant.foods.filter((food: any) => food.popular),
+    ) ?? [];
+
   const filteredRestaurants =
     selectedCategory === "All"
       ? (data?.restaurants ?? [])
@@ -165,7 +170,7 @@ export default function HomeScreen() {
             <Text className="font-inter-bold text-primary">See all</Text>
           </View>
 
-          <FoodCard />
+          <FoodCard popularFood={popularFood} />
 
           <Text className="font-inter-bold">Featured restaurants</Text>
 

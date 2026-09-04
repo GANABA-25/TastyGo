@@ -1,5 +1,7 @@
+import FoodDetailSkeleton from "@/src/components/loadingCard/foodDetialsSkeleton";
 import TextArea from "@/src/components/textArea";
-import { popularFoods } from "@/src/data/dummyData";
+import { useFetch } from "@/src/hooks/useFetch";
+import { getFoodDetail } from "@/src/util/https";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -18,13 +20,37 @@ const foodDetail = () => {
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [selectedSize, setSelectedSize] = useState("Regular");
 
-  // const { data, isLoading, isError, refetch } = useFetch({
-  //   queryKey: ["foodDetails"],
-  //   queryFn: () => getFoodDetail(id),
-  //   errorMessage: "Failed to load restaurants.",
-  // });
+  const { data, isLoading, isError, refetch } = useFetch({
+    queryKey: ["foodDetails"],
+    queryFn: () => getFoodDetail(id),
+    errorMessage: "Failed to load restaurants.",
+  });
 
-  const food = popularFoods.find((food) => food.id === id);
+  if (isLoading) {
+    return (
+      <>
+        <StatusBar hidden />
+        <FoodDetailSkeleton />
+      </>
+    );
+  }
+
+  if (isError || !data?.foodDetail) {
+    return (
+      <View className="flex-1 justify-center items-center px-6 bg-white">
+        <Text className="mb-4 text-lg text-center font-inter-bold">
+          Failed to load food details
+        </Text>
+
+        <Pressable
+          onPress={() => refetch()}
+          className="px-6 py-3 rounded-full bg-primary"
+        >
+          <Text className="text-white font-inter-bold">Try Again</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1">
@@ -32,7 +58,7 @@ const foodDetail = () => {
 
       <View className="relative h-[30%]">
         <Image
-          source={{ uri: food?.image }}
+          source={{ uri: data?.foodDetail?.image }}
           className="w-full h-full"
           resizeMode="cover"
         />
@@ -62,21 +88,23 @@ const foodDetail = () => {
             <View className="flex-row justify-between items-center">
               <View>
                 <Text className="flex-1 text-2xl capitalize font-inter-bold">
-                  {food?.name}
+                  {data?.foodDetail?.name}
                 </Text>
                 <Text className="font-inter-bold text-primary">
-                  {food?.vendor}
+                  {data?.foodDetail?.category}
                 </Text>
               </View>
 
               <View className="flex-row gap-2 items-center">
                 <Star size={15} color="#fad06a" fill="#fad06a" />
-                <Text className="font-inter-bold">{food?.rating}</Text>
+                <Text className="font-inter-bold">
+                  {data?.foodDetail?.rating}
+                </Text>
               </View>
             </View>
 
             <Text className="text-gray-500 font-inter">
-              {food?.description}
+              {data?.foodDetail?.description}
             </Text>
 
             <Text className="text-2xl font-inter-bold">Choose a size</Text>
@@ -122,11 +150,11 @@ const foodDetail = () => {
             <Text className="text-2xl font-inter-bold">Add Extra</Text>
 
             <View className="overflow-hidden bg-white rounded-3xl border border-gray-100 elevation-sm">
-              {food?.extra.map((data, index) => {
+              {data?.foodDetail?.extras.map((data: any, index: any) => {
                 const selected = selectedExtras.includes(data.type);
                 return (
                   <Pressable
-                    key={data.type}
+                    key={data.id}
                     onPress={() => {
                       setSelectedExtras((prev) =>
                         prev.includes(data.type)
@@ -135,13 +163,13 @@ const foodDetail = () => {
                       );
                     }}
                     className={`flex-row items-center justify-between p-6 ${
-                      index !== food.extra.length - 1
+                      index !== data?.foodDetail?.extra.length - 1
                         ? "border-b border-gray-200"
                         : ""
                     }`}
                   >
                     <View className="flex-row gap-2 items-center">
-                      <Text className="font-inter-bold">{data.type}</Text>
+                      <Text className="font-inter-bold">{data.name}</Text>
                     </View>
 
                     <View className="flex-row gap-4 items-center">

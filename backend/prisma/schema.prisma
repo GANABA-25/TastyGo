@@ -43,7 +43,6 @@ model Restaurant {
   name String
   tags String[]
   rating Float?
-  reviews Int @default(0)
   eta String?
   distance String?
   deliveryFee Decimal @default(0)
@@ -53,9 +52,24 @@ model Restaurant {
   promo String?
 
   foods Food[]
+  reviews RestaurantReview[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model RestaurantReview {
+  id String @id @default(cuid())
+  restaurantId String
+  name String
+  rating Int
+  text String
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([restaurantId])
 }
 
 model Food {
@@ -84,8 +98,11 @@ model FoodExtra {
   foodId String
   name String
   price Decimal
+
   food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
+
   @@index([foodId])
 }
 
@@ -95,7 +112,10 @@ model FoodReview {
   name String
   rating Int
   text String
-  createdAt DateTime @default(now())
+
   food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
   @@index([foodId])
 }

@@ -1,12 +1,35 @@
 import { router } from "expo-router";
 import { Plus, Star } from "lucide-react-native";
 import { FlatList, Image, Pressable, Text, View } from "react-native";
-import { popularFoods } from "../data/dummyData";
 
-const FoodCard = () => {
+type PopularFood = {
+  id: string;
+  restaurantId: string;
+  name: string;
+  description: string;
+  image: string;
+  rating: number;
+  price: number | string;
+  category: string;
+  popular: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  extra: [];
+  review: [];
+};
+
+type popularFoodProps = {
+  popularFood: PopularFood[];
+};
+
+const FoodCard = ({ popularFood }: popularFoodProps) => {
+  if (!popularFood) {
+    return <Text>Empty</Text>;
+  }
+
   return (
     <FlatList
-      data={popularFoods}
+      data={popularFood}
       horizontal
       nestedScrollEnabled
       showsHorizontalScrollIndicator={false}
@@ -18,31 +41,31 @@ const FoodCard = () => {
             router.push({
               pathname: "/foodDetail",
               params: {
-                id: item.id,
+                id: item?.id,
               },
             })
           }
-          className="w-56 overflow-hidden rounded-3xl border border-gray-200 bg-white elevation-sm"
+          className="overflow-hidden w-56 bg-white rounded-3xl border border-gray-200 elevation-sm"
         >
-          <View className="h-36 overflow-hidden">
+          <View className="overflow-hidden h-36">
             <Image
-              source={{ uri: item.image }}
-              className="h-full w-full"
+              source={{ uri: item?.image }}
+              className="w-full h-full"
               resizeMode="cover"
             />
           </View>
           <View className="gap-2 p-4">
-            <Text className="text-center font-inter-bold">{item.name}</Text>
-            <View className="flex-row items-center gap-2">
+            <Text className="font-inter-bold">{item?.name}</Text>
+            <View className="flex-row gap-2 items-center">
               <Star size={15} color="#fd6c39" />
-              <Text className="font-inter-bold">{item.rating}</Text>
+              <Text className="font-inter-bold">{item?.rating}</Text>
             </View>
 
-            <View className="flex-row items-center justify-between">
+            <View className="flex-row justify-between items-center">
               <Text className="font-inter-bold text-primary">
-                ${item.price.toFixed(2)}
+                ${item?.price}
               </Text>
-              <View className="rounded-full bg-primary p-2">
+              <View className="p-2 rounded-full bg-primary">
                 <Plus size={20} color="white" />
               </View>
             </View>

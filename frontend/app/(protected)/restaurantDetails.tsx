@@ -54,8 +54,6 @@ const RestaurantDetails = () => {
     errorMessage: "Failed to load restaurants.",
   });
 
-  console.log("checking data", data?.data.foods);
-
   if (isLoading) {
     return <RestaurantDetailsLoading />;
   }
@@ -187,7 +185,7 @@ const RestaurantDetails = () => {
 
                   <View className="flex-row justify-between items-center mt-3">
                     <Text className="text-primary font-inter-bold">
-                      ${dish.price}
+                      ${Number(dish.price).toFixed(2)}
                     </Text>
 
                     <Pressable className="justify-center items-center w-10 h-10 rounded-full bg-primary">
@@ -200,8 +198,10 @@ const RestaurantDetails = () => {
 
             <View className="gap-4">
               <Text className="text-2xl font-inter-bold">Reviews</Text>
-              <ReviewCard />
-              <ReviewCard />
+
+              {data?.data?.reviews.map((review: any) => (
+                <ReviewCard key={review.id} review={review} />
+              ))}
             </View>
           </View>
         </ScrollView>

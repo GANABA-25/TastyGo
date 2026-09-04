@@ -16,7 +16,6 @@ const postRestaurants = async (req: AuthRequest, res: Response) => {
       name,
       tags = [],
       rating,
-      reviews = 0,
       eta,
       distance,
       deliveryFee = 0,
@@ -24,12 +23,25 @@ const postRestaurants = async (req: AuthRequest, res: Response) => {
       featured = false,
       popular = false,
       promo,
+      reviews = [],
       foods = [],
     } = restaurant;
 
     if (!name) {
       return res.status(400).json({
         message: "Restaurant name is required.",
+      });
+    }
+
+    if (!Array.isArray(tags)) {
+      return res.status(400).json({
+        message: "Tags must be an array.",
+      });
+    }
+
+    if (!Array.isArray(reviews)) {
+      return res.status(400).json({
+        message: "Reviews must be an array.",
       });
     }
 
@@ -44,7 +56,6 @@ const postRestaurants = async (req: AuthRequest, res: Response) => {
         name,
         tags,
         rating,
-        reviews,
         eta,
         distance,
         deliveryFee,
@@ -52,6 +63,15 @@ const postRestaurants = async (req: AuthRequest, res: Response) => {
         featured,
         popular,
         promo,
+
+        reviews: {
+          create: reviews.map((review: any) => ({
+            name: review.name,
+            rating: review.rating,
+            text: review.text,
+          })),
+        },
+
         foods: {
           create: foods.map((food: any) => ({
             name: food.name,
@@ -61,12 +81,14 @@ const postRestaurants = async (req: AuthRequest, res: Response) => {
             price: food.price,
             category: food.category,
             popular: food.popular ?? false,
+
             extras: {
               create: (food.extras ?? []).map((extra: any) => ({
                 name: extra.name,
                 price: extra.price,
               })),
             },
+
             reviews: {
               create: (food.reviews ?? []).map((review: any) => ({
                 name: review.name,
@@ -77,7 +99,10 @@ const postRestaurants = async (req: AuthRequest, res: Response) => {
           })),
         },
       },
+
       include: {
+        reviews: true,
+
         foods: {
           include: {
             extras: true,
