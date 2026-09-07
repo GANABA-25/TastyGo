@@ -6,14 +6,7 @@ import { useCart } from "@/src/store/cartContext";
 import { getFoodDetail } from "@/src/util/https";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import {
-  ArrowLeft,
-  Check,
-  Heart,
-  Minus,
-  Plus,
-  Star,
-} from "lucide-react-native";
+import { ArrowLeft, Check, Heart, Star } from "lucide-react-native";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 
@@ -209,28 +202,10 @@ const foodDetail = () => {
               }}
             />
 
-            <View className="flex-row gap-4 justify-between items-center">
-              <View className="flex-row items-center px-2 h-14 rounded-full bg-primary-light">
-                <Pressable className="justify-center items-center w-10 h-10 bg-white rounded-full">
-                  <Minus size={17} color="#333" strokeWidth={2.5} />
-                </Pressable>
-
-                <Text className="w-10 text-base text-center font-inter-bold">
-                  0
-                </Text>
-
-                <Pressable className="justify-center items-center w-10 h-10 bg-white rounded-full">
-                  <Plus size={17} color="#333" strokeWidth={2.5} />
-                </Pressable>
-              </View>
-
-              <View className="flex-1">
-                <Button
-                  onPress={() => addToCart(data?.foodDetail)}
-                  label={`Add - $${Number(data?.foodDetail?.price).toFixed(2)}`}
-                />
-              </View>
-            </View>
+            <Button
+              onPress={() => addToCart(data?.foodDetail)}
+              label={`Add - $${Number(data?.foodDetail?.price).toFixed(2)}`}
+            />
           </View>
         </ScrollView>
       </View>

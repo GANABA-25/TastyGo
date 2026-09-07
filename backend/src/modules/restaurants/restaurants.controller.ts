@@ -50,8 +50,6 @@ const getRestaurantData = async (req: AuthRequest, res: Response) => {
       },
     });
 
-    console.log(restaurantData);
-
     if (!restaurantData) {
       return res.status(404).json({
         message: "Restaurant not found!",

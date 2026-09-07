@@ -1,16 +1,16 @@
+import Button from "@/src/components/button";
 import { useCart } from "@/src/store/cartContext";
 import { Minus, Plus, Trash } from "lucide-react-native";
 import { Image, Pressable, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const Cart = () => {
   const { cart, increaseQuantity, decreaseQuantity, removeFromCart } =
     useCart();
 
   return (
-    <SafeAreaView className="flex-1 p-4">
+    <View className="gap-4 p-4">
       <View className="gap-4">
-        {cart.map((item) => (
+        {cart.items.map((item) => (
           <View
             key={item.id}
             className="flex-row gap-4 items-center p-4 bg-white rounded-2xl border border-gray-200 elevation-sm"
@@ -25,7 +25,7 @@ const Cart = () => {
 
             <View className="flex-1 gap-2 min-w-0">
               <View className="flex-row justify-between items-center">
-                <Text className="text-2xl font-inter-bold">{item.name}</Text>
+                <Text className="text-xl font-inter-bold">{item.name}</Text>
                 <Pressable onPress={() => removeFromCart(item.id)}>
                   <Trash size={20} color="red" />
                 </Pressable>
@@ -54,7 +54,25 @@ const Cart = () => {
           </View>
         ))}
       </View>
-    </SafeAreaView>
+
+      <View className="gap-4 p-4 bg-white rounded-2xl border border-gray-200">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-gray-500 font-inter">Subtotal</Text>
+          <Text>${cart.subTotal.toFixed(2)}</Text>
+        </View>
+        <View className="flex-row justify-between items-center">
+          <Text className="text-gray-500 font-inter">Delivery</Text>
+          <Text>${cart.deliveryFee.toFixed(2)}</Text>
+        </View>
+
+        <View className="flex-row justify-between items-center p-4 border-t border-gray-200">
+          <Text className="font-inter-bold">Total</Text>
+          <Text>${cart.total.toFixed(2)}</Text>
+        </View>
+      </View>
+
+      <Button label="Go to checkout" />
+    </View>
   );
 };
 

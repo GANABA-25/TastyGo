@@ -21,7 +21,10 @@ const Tab = createBottomTabNavigator();
 export default function TabLayout() {
   const { cart } = useCart();
 
-  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const cartItemCount = cart.items.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
 
   return (
     <Tab.Navigator
@@ -67,6 +70,14 @@ export default function TabLayout() {
         name="Cart"
         component={cartScreen}
         options={{
+          headerShown: true,
+          headerTitle: "Your Cart",
+          headerTitleStyle: {
+            fontFamily: "Inter-Bold",
+            fontSize: 22,
+          },
+          headerShadowVisible: false,
+
           tabBarBadge: cartItemCount > 0 ? cartItemCount : undefined,
           tabBarBadgeStyle: {
             backgroundColor: "#fd6c39",
