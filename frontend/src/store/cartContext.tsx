@@ -1,21 +1,16 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { DishTypes } from "../types/dishTypes";
 
-type CartItem = {
-  id: string;
-  name: string;
-  price: string | number;
-  image?: string;
+type CartItem = DishTypes & {
   quantity: number;
-  extras?: {
-    id: string;
-    name: string;
-    price: string | number;
-  }[];
+  totalPrice: number;
 };
+
+type AddToCartItem = DishTypes;
 
 type CartContextTypes = {
   cart: CartItem[];
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: AddToCartItem) => void;
   removeFromCart: (id: string) => void;
   increaseQuantity: (id: string) => void;
   decreaseQuantity: (id: string) => void;
@@ -31,7 +26,7 @@ type CartProviderProps = {
 export function CartProvider({ children }: CartProviderProps) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  const addToCart = (item: CartItem) => {
+  const addToCart = (item: AddToCartItem) => {
     setCart((currentCart) => {
       const existingItem = currentCart.find(
         (cartItem) => cartItem.id === item.id,
@@ -42,13 +37,21 @@ export function CartProvider({ children }: CartProviderProps) {
           cartItem.id === item.id
             ? {
                 ...cartItem,
-                quantity: cartItem.quantity + item.quantity,
+                quantity: cartItem.quantity + 1,
+                totalPrice: Number(cartItem.price) * (cartItem.quantity + 1),
               }
             : cartItem,
         );
       }
 
-      return [...currentCart, item];
+      return [
+        ...currentCart,
+        {
+          ...item,
+          quantity: 1,
+          totalPrice: Number(item.price),
+        },
+      ];
     });
   };
 
@@ -65,6 +68,7 @@ export function CartProvider({ children }: CartProviderProps) {
           ? {
               ...cartItem,
               quantity: cartItem.quantity + 1,
+              totalPrice: Number(cartItem.price) * (cartItem.quantity + 1),
             }
           : cartItem,
       ),
@@ -79,6 +83,8 @@ export function CartProvider({ children }: CartProviderProps) {
             ? {
                 ...cartItem,
                 quantity: cartItem.quantity - 1,
+                totalPrice:
+                  Number(cartItem.totalPrice) - Number(cartItem.price),
               }
             : cartItem,
         )

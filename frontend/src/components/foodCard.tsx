@@ -1,28 +1,17 @@
 import { router } from "expo-router";
 import { Plus, Star } from "lucide-react-native";
 import { FlatList, Image, Pressable, Text, View } from "react-native";
+import { useCart } from "../store/cartContext";
 
-type PopularFood = {
-  id: string;
-  restaurantId: string;
-  name: string;
-  description: string;
-  image: string;
-  rating: number;
-  price: number | string;
-  category: string;
-  popular: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  extra: [];
-  review: [];
-};
+import { DishTypes } from "../types/dishTypes";
 
 type popularFoodProps = {
-  popularFood: PopularFood[];
+  popularFood: DishTypes[];
 };
 
 const FoodCard = ({ popularFood }: popularFoodProps) => {
+  const { addToCart } = useCart();
+
   if (!popularFood) {
     return <Text>Empty</Text>;
   }
@@ -63,11 +52,15 @@ const FoodCard = ({ popularFood }: popularFoodProps) => {
 
             <View className="flex-row justify-between items-center">
               <Text className="font-inter-bold text-primary">
-                ${item?.price}
+                ${Number(item?.price).toFixed(2)}
               </Text>
-              <View className="p-2 rounded-full bg-primary">
+
+              <Pressable
+                onPress={() => addToCart(item)}
+                className="p-2 rounded-full bg-primary"
+              >
                 <Plus size={20} color="white" />
-              </View>
+              </Pressable>
             </View>
           </View>
         </Pressable>

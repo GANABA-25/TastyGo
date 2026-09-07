@@ -1,5 +1,6 @@
 import { AuthProvider } from "./AuthContext";
 import { LocationProvider } from "./LocationContext";
+import { CartProvider } from "./cartContext";
 
 export default function AppContextProvider({
   children,
@@ -8,7 +9,9 @@ export default function AppContextProvider({
 }) {
   return (
     <AuthProvider>
-      <LocationProvider>{children}</LocationProvider>
+      <LocationProvider>
+        <CartProvider>{children}</CartProvider>
+      </LocationProvider>
     </AuthProvider>
   );
 }

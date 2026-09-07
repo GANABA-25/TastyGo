@@ -2,15 +2,27 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import HomeScreen from "./home";
 
+import cartScreen from "./cart";
 import OrdersScreen from "./orders";
 import ProfileScreen from "./profile";
 import SavedScreen from "./saved";
 
-import { CircleDollarSign, Heart, House, UserRound } from "lucide-react-native";
+import { useCart } from "@/src/store/cartContext";
+import {
+  CircleDollarSign,
+  Heart,
+  House,
+  ShoppingCart,
+  UserRound,
+} from "lucide-react-native";
 
 const Tab = createBottomTabNavigator();
 
 export default function TabLayout() {
+  const { cart } = useCart();
+
+  const cartItemCount = cart.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -41,6 +53,9 @@ export default function TabLayout() {
             case "Profile":
               return <UserRound color={color} size={size} />;
 
+            case "Cart":
+              return <ShoppingCart color={color} size={size} />;
+
             default:
               return null;
           }
@@ -48,6 +63,18 @@ export default function TabLayout() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen
+        name="Cart"
+        component={cartScreen}
+        options={{
+          tabBarBadge: cartItemCount > 0 ? cartItemCount : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: "#fd6c39",
+            color: "#fff",
+            fontFamily: "Inter-Bold",
+          },
+        }}
+      />
       <Tab.Screen name="Saved" component={SavedScreen} />
       <Tab.Screen name="Orders" component={OrdersScreen} />
 

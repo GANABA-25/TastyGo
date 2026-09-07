@@ -1,6 +1,8 @@
+import Button from "@/src/components/button";
 import FoodDetailSkeleton from "@/src/components/loadingCard/foodDetialsSkeleton";
 import TextArea from "@/src/components/textArea";
 import { useFetch } from "@/src/hooks/useFetch";
+import { useCart } from "@/src/store/cartContext";
 import { getFoodDetail } from "@/src/util/https";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -16,6 +18,7 @@ import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 
 const foodDetail = () => {
+  const { addToCart } = useCart();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [selectedSize, setSelectedSize] = useState("Regular");
@@ -221,15 +224,12 @@ const foodDetail = () => {
                 </Pressable>
               </View>
 
-              <Pressable className="flex-row flex-1 gap-2 justify-center items-center h-14 rounded-full bg-primary">
-                <Text className="text-base text-white font-inter-bold">
-                  Add
-                </Text>
-
-                <View className="w-1 h-1 rounded-full bg-white/60" />
-
-                <Text className="text-base text-white font-inter">$18.00</Text>
-              </Pressable>
+              <View className="flex-1">
+                <Button
+                  onPress={() => addToCart(data?.foodDetail)}
+                  label={`Add - $${Number(data?.foodDetail?.price).toFixed(2)}`}
+                />
+              </View>
             </View>
           </View>
         </ScrollView>
