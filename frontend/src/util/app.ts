@@ -4,7 +4,7 @@ import * as SecureStore from "expo-secure-store";
 const ACCESS_TOKEN_KEY = "accessToken";
 
 export const api = axios.create({
-  baseURL: "http://192.168.8.102:8090",
+  baseURL: "http://10.151.189.104:8090",
   headers: {
     "Content-Type": "application/json",
   },

@@ -165,22 +165,7 @@ export default function HomeScreen() {
             <View className="absolute right-[5rem] top-20 bg-white/10 w-[7rem] h-[7rem] rounded-full" />
           </View>
 
-          <View className="flex-row justify-between items-center">
-            <Text className="font-inter-bold">Popular right now</Text>
-            <Text className="font-inter-bold text-primary">See all</Text>
-          </View>
-
-          <FoodCard popularFood={popularFood} />
-
-          <Text className="font-inter-bold">Featured restaurants</Text>
-
-          {isLoading || isRefetching ? (
-            <View className="gap-4">
-              {Array.from({ length: 3 }).map((_, index) => (
-                <RestaurantLoadingCard key={index} />
-              ))}
-            </View>
-          ) : filteredRestaurants.length === 0 ? (
+          {filteredRestaurants.length === 0 ? (
             <View className="justify-center items-center px-6 py-10 bg-gray-50 rounded-3xl border border-gray-100">
               <View className="justify-center items-center mb-4 w-16 h-16 bg-orange-100 rounded-full">
                 <UtensilsCrossed size={30} color="#FF6B35" />
@@ -204,11 +189,30 @@ export default function HomeScreen() {
               </View>
             </View>
           ) : (
-            <View className="gap-4">
-              {filteredRestaurants.map((item: any) => (
-                <RestaurantsCard key={item.id} item={item} />
-              ))}
-            </View>
+            <>
+              <View className="flex-row justify-between items-center">
+                <Text className="font-inter-bold">Popular right now</Text>
+                <Text className="font-inter-bold text-primary">See all</Text>
+              </View>
+
+              <FoodCard popularFood={popularFood} />
+
+              <Text className="font-inter-bold">Featured restaurants</Text>
+
+              {isLoading || isRefetching ? (
+                <View className="gap-4">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <RestaurantLoadingCard key={index} />
+                  ))}
+                </View>
+              ) : (
+                <View className="gap-4">
+                  {filteredRestaurants.map((item: any) => (
+                    <RestaurantsCard key={item.id} item={item} />
+                  ))}
+                </View>
+              )}
+            </>
           )}
         </ScrollView>
       </View>

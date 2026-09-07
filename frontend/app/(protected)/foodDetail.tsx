@@ -23,7 +23,7 @@ const foodDetail = () => {
   const { data, isLoading, isError, refetch } = useFetch({
     queryKey: ["foodDetails"],
     queryFn: () => getFoodDetail(id),
-    errorMessage: "Failed to load restaurants.",
+    errorMessage: "Failed to load food details.",
   });
 
   if (isLoading) {
