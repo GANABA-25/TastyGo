@@ -53,3 +53,8 @@ export const getRestaurantData = async (id: string) => {
 
   return response.data;
 };
+
+export const addToCartUri = async (id: string) => {
+  const response = await api.get(`/cart/addToCart/${id}`);
+  return response.data;
+};

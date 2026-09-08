@@ -1,6 +1,8 @@
+import { useMutation } from "@tanstack/react-query";
 import { createContext, useContext, useState, type ReactNode } from "react";
 import Toast from "react-native-toast-message";
 import { DishTypes } from "../types/dishTypes";
+import { addToCartUri } from "../util/https";
 
 type CartItem = {
   id: string;
@@ -55,6 +57,12 @@ export function CartProvider({ children }: CartProviderProps) {
     subTotal: 0,
     deliveryFee: 0,
     total: 0,
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: addToCartUri,
+
+    onSuccess: (data) => {},
   });
 
   const addToCart = (item: AddToCartItem) => {
@@ -116,6 +124,8 @@ export function CartProvider({ children }: CartProviderProps) {
         total: subTotal + currentCart.deliveryFee,
       };
     });
+
+    mutate(item.id);
 
     Toast.show({
       type: "success",
