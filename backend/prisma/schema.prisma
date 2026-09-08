@@ -13,25 +13,26 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  fullName String
-  email String @unique
-  phoneNumber String @unique
-  password String
-  avatar String @default("https://res.cloudinary.com/dkjlpfa1q/image/upload/v1782166584/account_zthiqy_ottzxh.png")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  fullName    String
+  email       String   @unique
+  phoneNumber String   @unique
+  password    String
+  avatar      String   @default("https://res.cloudinary.com/dkjlpfa1q/image/upload/v1782166584/account_zthiqy_ottzxh.png")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   passwordResetRequests PasswordResetRequest[]
+  cart                  Cart?
 }
 
 model PasswordResetRequest {
-  id String @id @default(cuid())
-  userId Int
-  otpVerified Boolean @default(false)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
-  usedAt DateTime?
+  id          String    @id @default(cuid())
+  userId      Int
+  otpVerified Boolean   @default(false)
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+  usedAt      DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -39,19 +40,19 @@ model PasswordResetRequest {
 }
 
 model Restaurant {
-  id String @id @default(cuid())
-  name String
-  tags String[]
-  rating Float?
-  eta String?
-  distance String?
-  deliveryFee Decimal @default(0)
-  image String?
-  featured Boolean @default(false)
-  popular Boolean @default(false)
-  promo String?
+  id          String   @id @default(cuid())
+  name        String
+  tags        String[]
+  rating      Float?
+  eta         String?
+  distance    String?
+  deliveryFee Decimal  @default(0)
+  image       String?
+  featured    Boolean  @default(false)
+  popular     Boolean  @default(false)
+  promo       String?
 
-  foods Food[]
+  foods   Food[]
   reviews RestaurantReview[]
 
   createdAt DateTime @default(now())
@@ -59,11 +60,11 @@ model Restaurant {
 }
 
 model RestaurantReview {
-  id String @id @default(cuid())
+  id           String @id @default(cuid())
   restaurantId String
-  name String
-  rating Int
-  text String
+  name         String
+  rating       Int
+  text         String
 
   restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
 
@@ -73,19 +74,20 @@ model RestaurantReview {
 }
 
 model Food {
-  id String @id @default(cuid())
+  id           String  @id @default(cuid())
   restaurantId String
-  name String
-  description String?
-  image String?
-  rating Float?
-  price Decimal
-  category String
-  popular Boolean @default(false)
+  name         String
+  description  String?
+  image        String?
+  rating       Float?
+  price        Decimal
+  category     String
+  popular      Boolean @default(false)
 
-  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  extras FoodExtra[]
-  reviews FoodReview[]
+  restaurant Restaurant   @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  extras     FoodExtra[]
+  reviews    FoodReview[]
+  cartItems  CartItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,10 +96,10 @@ model Food {
 }
 
 model FoodExtra {
-  id String @id @default(cuid())
+  id     String  @id @default(cuid())
   foodId String
-  name String
-  price Decimal
+  name   String
+  price  Decimal
 
   food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
 
@@ -107,15 +109,42 @@ model FoodExtra {
 }
 
 model FoodReview {
-  id String @id @default(cuid())
+  id     String @id @default(cuid())
   foodId String
-  name String
+  name   String
   rating Int
-  text String
+  text   String
 
-  food Food @relation(fields: [foodId], references: [id], onDelete: Cascade)
-
+  food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
+  @@index([foodId])
+}
+
+model Cart {
+  id     String     @id @default(cuid())
+  userId Int        @unique
+  items  CartItem[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id                  String  @id @default(cuid())
+  cartId              String
+  foodId              String
+  quantity            Int
+  specialInstructions String?
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  food Food @relation(fields: [foodId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cartId])
   @@index([foodId])
 }

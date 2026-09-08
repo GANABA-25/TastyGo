@@ -62,77 +62,90 @@ export function CartProvider({ children }: CartProviderProps) {
   const { mutate, isPending } = useMutation({
     mutationFn: addToCartUri,
 
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      // setCart(data.cart);
+      Toast.show({
+        type: "success",
+        text1: data.wasAlreadyInCart
+          ? `${data.itemName} quantity increased`
+          : `${data.itemName} added to cart`,
+      });
+    },
+
+    onError: () => {
+      Toast.show({ type: "error", text1: "Couldn't add item to cart" });
+    },
   });
 
+  // const addToCart = (item: AddToCartItem) => {
+  //   // let alreadyInCart = false;
+
+  //   // setCart((currentCart) => {
+  //   //   const existingItem = currentCart.items.find(
+  //   //     (cartItem) => cartItem.id === item.id,
+  //   //   );
+
+  //   //   if (existingItem) {
+  //   //     alreadyInCart = true;
+
+  //   //     const items = currentCart.items.map((cartItem) =>
+  //   //       cartItem.id === item.id
+  //   //         ? {
+  //   //             ...cartItem,
+  //   //             quantity: cartItem.quantity + 1,
+  //   //             totalPrice: cartItem.basePrice * (cartItem.quantity + 1),
+  //   //           }
+  //   //         : cartItem,
+  //   //     );
+
+  //   //     const subTotal = items.reduce(
+  //   //       (total, item) => total + item.totalPrice,
+  //   //       0,
+  //   //     );
+
+  //   //     return {
+  //   //       ...currentCart,
+  //   //       items,
+  //   //       subTotal,
+  //   //       total: subTotal + currentCart.deliveryFee,
+  //   //     };
+  //   //   }
+
+  //   //   const newItem: CartItem = {
+  //   //     id: item.id,
+  //   //     foodId: item.id,
+  //   //     name: item.name,
+  //   //     image: item.image,
+  //   //     basePrice: Number(item.price),
+  //   //     quantity: 1,
+  //   //     totalPrice: Number(item.price),
+  //   //     extras: [],
+  //   //   };
+
+  //   //   const items = [...currentCart.items, newItem];
+
+  //   //   const subTotal = items.reduce(
+  //   //     (total, item) => total + item.totalPrice,
+  //   //     0,
+  //   //   );
+
+  //   //   return {
+  //   //     ...currentCart,
+  //   //     items,
+  //   //     subTotal,
+  //   //     total: subTotal + currentCart.deliveryFee,
+  //   //   };
+  //   // });
+
+  //   Toast.show({
+  //     type: "success",
+  //     text1: alreadyInCart
+  //       ? `${item.name} quantity increased`
+  //       : `${item.name} added to cart`,
+  //   });
+  // };
   const addToCart = (item: AddToCartItem) => {
-    let alreadyInCart = false;
-
-    setCart((currentCart) => {
-      const existingItem = currentCart.items.find(
-        (cartItem) => cartItem.id === item.id,
-      );
-
-      if (existingItem) {
-        alreadyInCart = true;
-
-        const items = currentCart.items.map((cartItem) =>
-          cartItem.id === item.id
-            ? {
-                ...cartItem,
-                quantity: cartItem.quantity + 1,
-                totalPrice: cartItem.basePrice * (cartItem.quantity + 1),
-              }
-            : cartItem,
-        );
-
-        const subTotal = items.reduce(
-          (total, item) => total + item.totalPrice,
-          0,
-        );
-
-        return {
-          ...currentCart,
-          items,
-          subTotal,
-          total: subTotal + currentCart.deliveryFee,
-        };
-      }
-
-      const newItem: CartItem = {
-        id: item.id,
-        foodId: item.id,
-        name: item.name,
-        image: item.image,
-        basePrice: Number(item.price),
-        quantity: 1,
-        totalPrice: Number(item.price),
-        extras: [],
-      };
-
-      const items = [...currentCart.items, newItem];
-
-      const subTotal = items.reduce(
-        (total, item) => total + item.totalPrice,
-        0,
-      );
-
-      return {
-        ...currentCart,
-        items,
-        subTotal,
-        total: subTotal + currentCart.deliveryFee,
-      };
-    });
-
-    mutate(item.id);
-
-    Toast.show({
-      type: "success",
-      text1: alreadyInCart
-        ? `${item.name} quantity increased`
-        : `${item.name} added to cart`,
-    });
+    mutate(item);
   };
 
   const removeFromCart = (id: string) => {

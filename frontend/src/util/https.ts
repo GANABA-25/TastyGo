@@ -5,6 +5,7 @@ import {
   ResetPasswordEmailType,
   ResetPasswordRequest,
 } from "../types/authTypes";
+import { DishTypes } from "../types/dishTypes";
 import { api } from "./app";
 
 export const register = async (data: createAccountTypes) => {
@@ -54,7 +55,7 @@ export const getRestaurantData = async (id: string) => {
   return response.data;
 };
 
-export const addToCartUri = async (id: string) => {
-  const response = await api.get(`/cart/addToCart/${id}`);
+export const addToCartUri = async (dish: DishTypes) => {
+  const response = await api.post("/cart/addToCart", dish);
   return response.data;
 };
