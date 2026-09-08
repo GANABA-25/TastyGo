@@ -5,7 +5,6 @@ import {
   ResetPasswordEmailType,
   ResetPasswordRequest,
 } from "../types/authTypes";
-import { DishTypes } from "../types/dishTypes";
 import { api } from "./app";
 
 export const register = async (data: createAccountTypes) => {
@@ -45,17 +44,15 @@ export const getAllRestaurants = async () => {
 
 export const getFoodDetail = async (id: string) => {
   const response = await api.get(`/restaurants/getFoodDetail/${id}`);
-
   return response.data;
 };
 
 export const getRestaurantData = async (id: string) => {
   const response = await api.get(`/restaurants/getRestaurantData/${id}`);
-
   return response.data;
 };
 
-export const addToCartUri = async (dish: DishTypes) => {
-  const response = await api.post("/cart/addToCart", dish);
+export const addToCartUri = async (dishId: string) => {
+  const response = await api.post(`/cart/addToCart/${dishId}`);
   return response.data;
 };

@@ -62,8 +62,9 @@ export function CartProvider({ children }: CartProviderProps) {
   const { mutate, isPending } = useMutation({
     mutationFn: addToCartUri,
 
-    onSuccess: (data) => {
-      // setCart(data.cart);
+    onSuccess: (data: any) => {
+      console.log("ADD TO CART RESPONSE:", JSON.stringify(data, null, 2));
+      setCart(data.cart);
       Toast.show({
         type: "success",
         text1: data.wasAlreadyInCart
@@ -72,7 +73,8 @@ export function CartProvider({ children }: CartProviderProps) {
       });
     },
 
-    onError: () => {
+    onError: (error) => {
+      console.log("checking error", error);
       Toast.show({ type: "error", text1: "Couldn't add item to cart" });
     },
   });
@@ -145,7 +147,7 @@ export function CartProvider({ children }: CartProviderProps) {
   //   });
   // };
   const addToCart = (item: AddToCartItem) => {
-    mutate(item);
+    mutate(item.id);
   };
 
   const removeFromCart = (id: string) => {
