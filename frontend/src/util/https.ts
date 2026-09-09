@@ -56,3 +56,9 @@ export const addToCartUri = async (dishId: string) => {
   const response = await api.post(`/cart/addToCart/${dishId}`);
   return response.data;
 };
+
+export const getCart = async () => {
+  console.log("came here to fetch");
+  const response = await api.get("/cart");
+  return response.data;
+};

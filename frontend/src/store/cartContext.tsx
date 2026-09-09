@@ -1,8 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import Toast from "react-native-toast-message";
+import { useFetch } from "../hooks/useFetch";
 import { DishTypes } from "../types/dishTypes";
-import { addToCartUri } from "../util/https";
+import { addToCartUri, getCart } from "../util/https";
 
 type CartItem = {
   id: string;
@@ -58,6 +65,21 @@ export function CartProvider({ children }: CartProviderProps) {
     deliveryFee: 0,
     total: 0,
   });
+
+  const { data, isLoading, isRefetching, isError, refetch } = useFetch({
+    queryKey: ["cart"],
+    queryFn: getCart,
+    errorMessage: "Failed to load restaurants.",
+  });
+
+  // asdhjgasfdgafhsd
+
+  useEffect(() => {
+    if (data) {
+      console.log("checking cart", data);
+      setCart(data.cart);
+    }
+  }, [data]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: addToCartUri,

@@ -7,8 +7,6 @@ const Cart = () => {
   const { cart, increaseQuantity, decreaseQuantity, removeFromCart } =
     useCart();
 
-  console.log(cart);
-
   return (
     <View className="gap-4 p-4">
       <View className="gap-4">
