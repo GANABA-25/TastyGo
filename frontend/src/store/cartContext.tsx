@@ -9,7 +9,13 @@ import {
 import Toast from "react-native-toast-message";
 import { useFetch } from "../hooks/useFetch";
 import { DishTypes } from "../types/dishTypes";
-import { addToCartUri, getCart } from "../util/https";
+import {
+  addToCartUri,
+  decreaseQuantityUri,
+  getCart,
+  increaseQuantityUri,
+  removeFromCartUri,
+} from "../util/https";
 
 type CartItem = {
   id: string;
@@ -46,7 +52,7 @@ type AddToCartItem = DishTypes;
 type CartContextTypes = {
   cart: Cart;
   addToCart: (item: AddToCartItem) => void;
-  removeFromCart: (id: string) => void;
+  removeFromCart: (cartItemId: string) => void;
   increaseQuantity: (id: string) => void;
   decreaseQuantity: (id: string) => void;
   clearCart: () => void;
@@ -72,11 +78,8 @@ export function CartProvider({ children }: CartProviderProps) {
     errorMessage: "Failed to load restaurants.",
   });
 
-  // asdhjgasfdgafhsd
-
   useEffect(() => {
     if (data) {
-      console.log("checking cart", data);
       setCart(data.cart);
     }
   }, [data]);
@@ -85,7 +88,7 @@ export function CartProvider({ children }: CartProviderProps) {
     mutationFn: addToCartUri,
 
     onSuccess: (data: any) => {
-      console.log("ADD TO CART RESPONSE:", JSON.stringify(data, null, 2));
+      // console.log("ADD TO CART RESPONSE:", JSON.stringify(data, null, 2));
       setCart(data.cart);
       Toast.show({
         type: "success",
@@ -101,147 +104,89 @@ export function CartProvider({ children }: CartProviderProps) {
     },
   });
 
-  // const addToCart = (item: AddToCartItem) => {
-  //   // let alreadyInCart = false;
+  const { mutate: removeFromCartMutation, isPending: isRemovingFromCart } =
+    useMutation({
+      mutationFn: removeFromCartUri,
 
-  //   // setCart((currentCart) => {
-  //   //   const existingItem = currentCart.items.find(
-  //   //     (cartItem) => cartItem.id === item.id,
-  //   //   );
+      onSuccess: (data: any) => {
+        setCart(data.cart);
 
-  //   //   if (existingItem) {
-  //   //     alreadyInCart = true;
+        Toast.show({
+          type: "success",
+          text1: `${data.itemName} removed from cart`,
+        });
+      },
 
-  //   //     const items = currentCart.items.map((cartItem) =>
-  //   //       cartItem.id === item.id
-  //   //         ? {
-  //   //             ...cartItem,
-  //   //             quantity: cartItem.quantity + 1,
-  //   //             totalPrice: cartItem.basePrice * (cartItem.quantity + 1),
-  //   //           }
-  //   //         : cartItem,
-  //   //     );
+      onError: (error) => {
+        console.log("Remove from cart error:", error);
 
-  //   //     const subTotal = items.reduce(
-  //   //       (total, item) => total + item.totalPrice,
-  //   //       0,
-  //   //     );
+        Toast.show({
+          type: "error",
+          text1: "Couldn't remove item from cart",
+        });
+      },
+    });
 
-  //   //     return {
-  //   //       ...currentCart,
-  //   //       items,
-  //   //       subTotal,
-  //   //       total: subTotal + currentCart.deliveryFee,
-  //   //     };
-  //   //   }
+  const { mutate: increaseQuantityMutation, isPending: isIncreaseQuantity } =
+    useMutation({
+      mutationFn: increaseQuantityUri,
 
-  //   //   const newItem: CartItem = {
-  //   //     id: item.id,
-  //   //     foodId: item.id,
-  //   //     name: item.name,
-  //   //     image: item.image,
-  //   //     basePrice: Number(item.price),
-  //   //     quantity: 1,
-  //   //     totalPrice: Number(item.price),
-  //   //     extras: [],
-  //   //   };
+      onSuccess: (data: any) => {
+        setCart(data.cart);
 
-  //   //   const items = [...currentCart.items, newItem];
+        Toast.show({
+          type: "success",
+          text1: "Item quantity increased",
+        });
+      },
 
-  //   //   const subTotal = items.reduce(
-  //   //     (total, item) => total + item.totalPrice,
-  //   //     0,
-  //   //   );
+      onError: (error) => {
+        console.log("Increase quantity error:", error);
 
-  //   //   return {
-  //   //     ...currentCart,
-  //   //     items,
-  //   //     subTotal,
-  //   //     total: subTotal + currentCart.deliveryFee,
-  //   //   };
-  //   // });
+        Toast.show({
+          type: "error",
+          text1: "Couldn't increase item quantity",
+        });
+      },
+    });
 
-  //   Toast.show({
-  //     type: "success",
-  //     text1: alreadyInCart
-  //       ? `${item.name} quantity increased`
-  //       : `${item.name} added to cart`,
-  //   });
-  // };
+  const { mutate: decreaseQuantityMutation, isPending: isDecreaseQuantity } =
+    useMutation({
+      mutationFn: decreaseQuantityUri,
+
+      onSuccess: (data: any) => {
+        setCart(data.cart);
+
+        Toast.show({
+          type: "success",
+          text1: "Item quantity decreased",
+        });
+      },
+
+      onError: (error) => {
+        console.log("Decrease quantity error:", error);
+
+        Toast.show({
+          type: "error",
+          text1: "Couldn't Decrease item quantity",
+        });
+      },
+    });
+
   const addToCart = (item: AddToCartItem) => {
     mutate(item.id);
   };
 
-  const removeFromCart = (id: string) => {
-    setCart((currentCart) => {
-      const items = currentCart.items.filter((cartItem) => cartItem.id !== id);
-
-      const subTotal = items.reduce(
-        (total, item) => total + item.totalPrice,
-        0,
-      );
-
-      return {
-        ...currentCart,
-        items,
-        subTotal,
-        total: subTotal + currentCart.deliveryFee,
-      };
-    });
+  const removeFromCart = (cartItemId: string) => {
+    removeFromCartMutation(cartItemId);
   };
 
   const increaseQuantity = (id: string) => {
-    setCart((currentCart) => {
-      const items = currentCart.items.map((cartItem) =>
-        cartItem.id === id
-          ? {
-              ...cartItem,
-              quantity: cartItem.quantity + 1,
-              totalPrice: cartItem.basePrice * (cartItem.quantity + 1),
-            }
-          : cartItem,
-      );
-
-      const subTotal = items.reduce(
-        (total, item) => total + item.totalPrice,
-        0,
-      );
-
-      return {
-        ...currentCart,
-        items,
-        subTotal,
-        total: subTotal + currentCart.deliveryFee,
-      };
-    });
+    increaseQuantityMutation(id);
   };
 
   const decreaseQuantity = (id: string) => {
-    setCart((currentCart) => {
-      const items = currentCart.items
-        .map((cartItem) =>
-          cartItem.id === id
-            ? {
-                ...cartItem,
-                quantity: cartItem.quantity - 1,
-                totalPrice: cartItem.basePrice * (cartItem.quantity - 1),
-              }
-            : cartItem,
-        )
-        .filter((cartItem) => cartItem.quantity > 0);
-
-      const subTotal = items.reduce(
-        (total, item) => total + item.totalPrice,
-        0,
-      );
-
-      return {
-        ...currentCart,
-        items,
-        subTotal,
-        total: subTotal + currentCart.deliveryFee,
-      };
-    });
+    decreaseQuantityMutation(id);
   };
 
   const clearCart = () => {

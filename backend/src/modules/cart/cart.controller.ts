@@ -212,10 +212,194 @@ const addToCart = async (req: AuthRequest, res: Response) => {
   }
 };
 
-const updateCartItem = (req: AuthRequest, res: Response) => {
+const removeCartItem = async (req: AuthRequest, res: Response) => {
   try {
+    const userId = req.user?.id;
+    const { cartItemId } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    if (!cartItemId) {
+      return res.status(400).json({
+        message: "Cart item ID is required",
+      });
+    }
+
+    const cartItem = await prisma.cartItem.findFirst({
+      where: {
+        id: cartItemId,
+        cart: {
+          userId,
+        },
+      },
+    });
+
+    if (!cartItem) {
+      return res.status(404).json({
+        message: "Cart item not found",
+      });
+    }
+
+    await prisma.cartItem.delete({
+      where: {
+        id: cartItemId,
+      },
+    });
+
+    const cart = await prisma.cart.findUnique({
+      where: {
+        userId,
+      },
+      include: {
+        items: {
+          include: {
+            food: {
+              select: {
+                name: true,
+                image: true,
+                price: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const cartItems =
+      cart?.items.map((item: any) => ({
+        id: item.id,
+        name: item.food.name,
+        image: item.food.image,
+        quantity: item.quantity,
+        totalPrice: Number(item.food.price) * item.quantity,
+      })) ?? [];
+
+    const subTotal = cartItems.reduce(
+      (total: number, item: any) => total + item.totalPrice,
+      0,
+    );
+
+    const deliveryFee = cartItems.length > 0 ? 10 : 0;
+    const total = subTotal + deliveryFee;
+
+    return res.status(200).json({
+      message: "Item removed from cart",
+      cart: {
+        items: cartItems,
+        subTotal,
+        deliveryFee,
+        total,
+      },
+    });
   } catch (error) {
-    console.error("Create restaurant error:", error);
+    console.error("Remove cart item error:", error);
+    return res.status(500).json({
+      message:
+        "An error occurred while processing your request. Please try again later.",
+    });
+  }
+};
+
+const increaseItemQuantity = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+    const { cartItemId } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    if (!cartItemId) {
+      return res.status(400).json({
+        message: "Cart item ID is required",
+      });
+    }
+
+    const cartItem = await prisma.cartItem.findFirst({
+      where: {
+        id: cartItemId,
+        cart: {
+          userId,
+        },
+      },
+    });
+
+    if (!cartItem) {
+      return res.status(404).json({
+        message: "Cart item not found",
+      });
+    }
+
+    await prisma.cartItem.update({
+      where: {
+        id: cartItemId,
+      },
+      data: {
+        quantity: {
+          increment: 1,
+        },
+      },
+    });
+
+    const updatedCart = await prisma.cart.findUnique({
+      where: {
+        userId,
+      },
+      include: {
+        items: {
+          include: {
+            food: {
+              select: {
+                name: true,
+                image: true,
+                price: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!updatedCart) {
+      return res.status(404).json({
+        message: "Cart not found",
+      });
+    }
+
+    const cartItems = updatedCart.items.map((item: any) => ({
+      id: item.id,
+      name: item.food.name,
+      image: item.food.image,
+      quantity: item.quantity,
+      totalPrice: Number(item.food.price) * item.quantity,
+    }));
+
+    const subTotal = cartItems.reduce(
+      (total: number, item: any) => total + item.totalPrice,
+      0,
+    );
+
+    const deliveryFee = cartItems.length > 0 ? 10 : 0;
+
+    const total = subTotal + deliveryFee;
+
+    return res.status(200).json({
+      message: "Item quantity increased",
+      cart: {
+        items: cartItems,
+        subTotal,
+        deliveryFee,
+        total,
+      },
+    });
+  } catch (error) {
+    console.error("Increase item quantity error:", error);
 
     return res.status(500).json({
       message:
@@ -224,22 +408,116 @@ const updateCartItem = (req: AuthRequest, res: Response) => {
   }
 };
 
-const removeCartItem = (req: AuthRequest, res: Response) => {
+const decreaseItemQuantity = async (req: AuthRequest, res: Response) => {
   try {
-  } catch (error) {
-    console.error("Create restaurant error:", error);
+    console.log("came here ");
+    const userId = req.user?.id;
+    const { cartItemId } = req.params;
 
-    return res.status(500).json({
-      message:
-        "An error occurred while processing your request. Please try again later.",
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    if (!cartItemId) {
+      return res.status(400).json({
+        message: "Cart item ID is required",
+      });
+    }
+
+    const cartItem = await prisma.cartItem.findFirst({
+      where: {
+        id: cartItemId,
+        cart: {
+          userId,
+        },
+      },
     });
-  }
-};
 
-const clearCart = (req: AuthRequest, res: Response) => {
-  try {
+    if (!cartItem) {
+      return res.status(404).json({
+        message: "Cart item not found",
+      });
+    }
+
+    if (cartItem.quantity === 1) {
+      await prisma.cartItem.delete({
+        where: {
+          id: cartItemId,
+        },
+      });
+    } else {
+      await prisma.cartItem.update({
+        where: {
+          id: cartItemId,
+        },
+        data: {
+          quantity: {
+            decrement: 1,
+          },
+        },
+      });
+    }
+
+    const updatedCart = await prisma.cart.findUnique({
+      where: {
+        userId,
+      },
+      include: {
+        items: {
+          include: {
+            food: {
+              select: {
+                name: true,
+                image: true,
+                price: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!updatedCart) {
+      return res.status(200).json({
+        message: "Item quantity decreased",
+        cart: {
+          items: [],
+          subTotal: 0,
+          deliveryFee: 0,
+          total: 0,
+        },
+      });
+    }
+
+    const cartItems = updatedCart.items.map((item: any) => ({
+      id: item.id,
+      name: item.food.name,
+      image: item.food.image,
+      quantity: item.quantity,
+      totalPrice: Number(item.food.price) * item.quantity,
+    }));
+
+    const subTotal = cartItems.reduce(
+      (total: number, item: any) => total + item.totalPrice,
+      0,
+    );
+
+    const deliveryFee = cartItems.length > 0 ? 10 : 0;
+    const total = subTotal + deliveryFee;
+
+    return res.status(200).json({
+      message: "Item quantity decreased",
+      cart: {
+        items: cartItems,
+        subTotal,
+        deliveryFee,
+        total,
+      },
+    });
   } catch (error) {
-    console.error("Create restaurant error:", error);
+    console.error("Decrease item quantity error:", error);
 
     return res.status(500).json({
       message:
@@ -251,7 +529,7 @@ const clearCart = (req: AuthRequest, res: Response) => {
 export default {
   getCart,
   addToCart,
-  updateCartItem,
   removeCartItem,
-  clearCart,
+  increaseItemQuantity,
+  decreaseItemQuantity,
 };

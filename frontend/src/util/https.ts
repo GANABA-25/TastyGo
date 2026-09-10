@@ -52,13 +52,27 @@ export const getRestaurantData = async (id: string) => {
   return response.data;
 };
 
+export const getCart = async () => {
+  const response = await api.get("/cart");
+  return response.data;
+};
+
 export const addToCartUri = async (dishId: string) => {
   const response = await api.post(`/cart/addToCart/${dishId}`);
   return response.data;
 };
 
-export const getCart = async () => {
-  console.log("came here to fetch");
-  const response = await api.get("/cart");
+export const removeFromCartUri = async (cartItemId: string) => {
+  const response = await api.delete(`/cart/item/${cartItemId}`);
+  return response.data;
+};
+
+export const increaseQuantityUri = async (cartItemId: string) => {
+  const response = await api.patch(`/cart/increaseItem/${cartItemId}`);
+  return response.data;
+};
+
+export const decreaseQuantityUri = async (cartItemId: string) => {
+  const response = await api.patch(`/cart/decreaseItem/${cartItemId}`);
   return response.data;
 };
