@@ -1,14 +1,19 @@
 import Button from "@/src/components/button";
 import { useCart } from "@/src/store/cartContext";
+import { router } from "expo-router";
 import { Minus, Plus, Trash } from "lucide-react-native";
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, View } from "react-native";
 
 const Cart = () => {
   const { cart, increaseQuantity, decreaseQuantity, removeFromCart } =
     useCart();
 
   return (
-    <View className="gap-4 p-4">
+    <ScrollView
+      contentContainerClassName="pb-8 gap-4"
+      showsVerticalScrollIndicator={false}
+      className="gap-4 p-4"
+    >
       <View className="gap-4">
         {cart.items.map((item) => (
           <View
@@ -71,8 +76,8 @@ const Cart = () => {
         </View>
       </View>
 
-      <Button label="Go to checkout" />
-    </View>
+      <Button onPress={() => router.push("/checkout")} label="Go to checkout" />
+    </ScrollView>
   );
 };
 
